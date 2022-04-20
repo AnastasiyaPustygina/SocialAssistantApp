@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_graph"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/signInFragment">
+
+    <fragment
+        tools:layout="@layout/reg_fragment"
+        android:id="@+id/regFragment"
+        android:name="com.example.mainproject.fragment.RegFragment"
+        android:label="RegFragment" >
+        <action
+            android:id="@+id/action_regFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/sign_in_fragment"
+        android:id="@+id/signInFragment"
+        android:name="com.example.mainproject.fragment.SignInFragment"
+        android:label="SignInFragment" >
+        <action
+            android:id="@+id/action_signInFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_regFragment"
+            app:destination="@id/regFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainFragment"
+        tools:layout="@layout/main_fragment"
+        android:name="com.example.mainproject.fragment.MainFragment"
+        android:label="MainFragment" >
+        <action
+            android:id="@+id/action_mainFragment_to_favouritesFragment"
+            app:destination="@id/favouritesFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_listOfChatsFragment"
+            app:destination="@id/listOfChatsFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favouritesFragment"
+        tools:layout="@layout/favourites_fragment"
+        android:name="com.example.mainproject.fragment.FavouritesFragment"
+        android:label="FavouritesFragment" >
+        <action
+            android:id="@+id/action_favouritesFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_favouritesFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_favouritesFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_favouritesFragment_to_listOfChatsFragment"
+            app:destination="@id/listOfChatsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listFragment"
+        tools:layout="@layout/list_fragment"
+        android:name="com.example.mainproject.fragment.ListFragment"
+        android:label="ListFragment" >
+        <action
+            android:id="@+id/action_listFragment_to_favouritesFragment"
+            app:destination="@id/favouritesFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_listOfChatsFragment"
+            app:destination="@id/listOfChatsFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/chat_fragment"
+        android:id="@+id/chatFragment"
+        android:name="com.example.mainproject.fragment.ChatFragment"
+        android:label="ChatFragment" >
+        <action
+            android:id="@+id/action_chatFragment_to_listOfChatsFragment"
+            app:destination="@id/listOfChatsFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/list_of_chats_fragment"
+        android:id="@+id/listOfChatsFragment"
+        android:name="com.example.mainproject.fragment.ListOfChatsFragment"
+        android:label="ListOfChatsFragment" >
+        <action
+            android:id="@+id/action_listOfChatsFragment_to_favouritesFragment"
+            app:destination="@id/favouritesFragment" />
+        <action
+            android:id="@+id/action_listOfChatsFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_listOfChatsFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_listOfChatsFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.mainproject.fragment.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" />
+</navigation>
