@@ -52,16 +52,19 @@ public class ChatFragment extends Fragment {
         ivMicro = getActivity().findViewById(R.id.iv_chat_micro);
         nameOrg = getActivity().findViewById(R.id.tv_ch_nameOrg);
         OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
+
+        int perId = openHelper.findPersonByLogin(
+                getArguments().getString("LOG")).getId();
         Organization org = openHelper.findOrgByName(getArguments().getString("NameOrg"));
         ChatArrayAdapter recyclerAdapter;
         RecyclerView rec = getActivity().findViewById(R.id.rec_chat);
         try {
 
             recyclerAdapter = new ChatArrayAdapter(getContext(),
-                    ChatFragment.this, openHelper.findChatIdByOrgId(org.getId()));
+                    ChatFragment.this, openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId));
             rec.setAdapter(recyclerAdapter);
             rec.scrollToPosition(openHelper.findMsgByChatId(
-                    openHelper.findChatIdByOrgId(org.getId())).size() - 1);
+                    openHelper.findChatIdByOrgIdAndPerId(org.getId(),perId)).size() - 1);
         }catch (CursorIndexOutOfBoundsException ignored){}
         bt_arrow_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,14 +99,15 @@ public class ChatFragment extends Fragment {
                         String curTime = new SimpleDateFormat(
                                 "HH:mm", Locale.getDefault()).format(new Date());
                         Message myMsg = new Message("me",
-                                openHelper.findChatIdByOrgId(org.getId()), et_msg.getText().toString(),
+                                openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId), et_msg.getText().toString(),
                                 curTime);
                         openHelper.insertMsg(myMsg);
                         ChatArrayAdapter recyclerAdapter1 = new ChatArrayAdapter(getContext(),
-                                ChatFragment.this, openHelper.findChatIdByOrgId(org.getId()));
+                                ChatFragment.this, openHelper.
+                                findChatIdByOrgIdAndPerId(org.getId(), perId));
                         rec.setAdapter(recyclerAdapter1);
                         rec.scrollToPosition(openHelper.findMsgByChatId(
-                                openHelper.findChatIdByOrgId(org.getId())).size() - 1);
+                                openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId)).size() - 1);
                         et_msg.setText("");
                     }
                 });

@@ -46,7 +46,7 @@ public class ChatListArrayAdapter extends RecyclerView.Adapter<ChatListArrayAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         OpenHelper openHelper = new OpenHelper(context, "OpenHelder", null, OpenHelper.VERSION);
-        ArrayList<String> arrListLastMsg = openHelper.findLastMsgValues();
+        ArrayList<String> arrListLastMsg = openHelper.findLastMsgValuesByPerName(name);
         ArrayList<Integer> arrListChatId = openHelper.findLastChatId();
         ArrayList<Organization> arrayListLastOrg = new ArrayList<>();
         for (int i = 0; i < arrListChatId.size(); i++) {
@@ -85,7 +85,7 @@ public class ChatListArrayAdapter extends RecyclerView.Adapter<ChatListArrayAdap
     public int getItemCount() {
         OpenHelper openHelper = new OpenHelper(context, "OpenHelder", null, OpenHelper.VERSION);
         try{
-            return openHelper.findLastMsgValues().size();
+            return openHelper.findLastMsgValuesByPerName(name).size();
         }catch (CursorIndexOutOfBoundsException e){return 0;}
     }
 

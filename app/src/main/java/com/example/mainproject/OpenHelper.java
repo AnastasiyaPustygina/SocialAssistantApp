@@ -269,7 +269,30 @@ public class OpenHelper extends SQLiteOpenHelper {
         }
         return new Person(null, null, 0, null, null, null);
     }
+    public Person findPersonById(int idPer){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cur = db.query(TABLE_PERSON_NAME, null, null,
+                null, null, null, null);
+        cur.moveToFirst();
+        if(!cur.isAfterLast()){
+            do{
+                int id = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_PERSON_ID));
+                String pass = cur.getString(cur.getColumnIndexOrThrow(COLUMN_PASSWORD));
+                int age = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_AGE));
+                String telephone = cur.getString(cur.getColumnIndexOrThrow(COLUMN_TELEPHONE));
+                String email = cur.getString(cur.getColumnIndexOrThrow(COLUMN_EMAIL));
+                String dateOfBirth = cur.getString(cur.getColumnIndexOrThrow(COLUMN_DATE_OF_BIRTH));
+                String city = cur.getString(cur.getColumnIndexOrThrow(COLUMN_CITY));
+                String name = cur.getString(cur.getColumnIndexOrThrow(COLUMN_NAME));
 
+                if(id == idPer) {
+                    String data = telephone == null ? email : telephone;
+                    return new Person(id, data, name, age, dateOfBirth, city, pass);
+                }
+            }while (cur.moveToNext());
+        }
+        return new Person(null, null, 0, null, null, null);
+    }
 
     public Organization findOrgByName(String nameOrg){
         SQLiteDatabase db = getReadableDatabase();
@@ -343,7 +366,26 @@ public class OpenHelper extends SQLiteOpenHelper {
         }while (cursor.moveToNext());
         return res;
     }
-    public ArrayList<String> findLastMsgValues(){
+    public int findPersonIdByChatId(int chatId){
+        ArrayList<Message> res = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_CHAT_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+        cursor.moveToFirst();
+        do {
+            int idPer = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PERSON_CHAT_ID));
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CHAT_ID));
+
+            if(chatId == id) return idPer;
+        }while (cursor.moveToNext());
+        return 100;
+    }
+    public ArrayList<String> findLastMsgValuesByPerName(String name){
         ArrayList<String> arr_msgValue = new ArrayList<>();
         ArrayList<Integer> arr_chat_id = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -358,15 +400,16 @@ public class OpenHelper extends SQLiteOpenHelper {
         do {
             String msg = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MSG_VALUE));
             Integer chatId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MSG_CHAT_ID));
-            if(arr_chat_id.contains((Object) chatId)){
-                arr_msgValue.remove(arr_chat_id.indexOf(chatId));
-                arr_chat_id.remove((Object) chatId);
-                arr_chat_id.add(chatId);
-                arr_msgValue.add(msg);
-            }
-            else{
-                arr_msgValue.add(msg);
-                arr_chat_id.add(chatId);
+            if(name.equals(findPersonById(findPersonIdByChatId(chatId)).getName())) {
+                if (arr_chat_id.contains((Object) chatId)) {
+                    arr_msgValue.remove(arr_chat_id.indexOf(chatId));
+                    arr_chat_id.remove((Object) chatId);
+                    arr_chat_id.add(chatId);
+                    arr_msgValue.add(msg);
+                } else {
+                    arr_msgValue.add(msg);
+                    arr_chat_id.add(chatId);
+                }
             }
 
         }while (cursor.moveToNext());
@@ -413,7 +456,7 @@ public class OpenHelper extends SQLiteOpenHelper {
         return new Organization(0, null, null, null,null,
                 null, null, null);
     }
-    public int findChatIdByOrgId(int orgId){
+    public int findChatIdByOrgIdAndPerId(int orgId, int perId){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_CHAT_NAME,
                 null,
@@ -424,9 +467,10 @@ public class OpenHelper extends SQLiteOpenHelper {
                 null);
         cursor.moveToFirst();
         do {
+            int currentPerId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PERSON_CHAT_ID));
             int currentChatId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CHAT_ID));
             int currentOrgId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ORGANIZATION_CHAT_ID));
-            if(orgId == currentOrgId) return currentChatId;
+            if(orgId == currentOrgId && perId == currentPerId) return currentChatId;
         }while (cursor.moveToNext());
         return 100;
     }
