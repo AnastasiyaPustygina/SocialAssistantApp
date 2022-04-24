@@ -61,6 +61,9 @@
         <action
             android:id="@+id/action_favouritesFragment_to_listOfChatsFragment"
             app:destination="@id/listOfChatsFragment" />
+        <action
+            android:id="@+id/action_favouritesFragment_to_fullInfoFragment"
+            app:destination="@id/fullInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/listFragment"
@@ -79,6 +82,9 @@
         <action
             android:id="@+id/action_listFragment_to_listOfChatsFragment"
             app:destination="@id/listOfChatsFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_fullInfoFragment"
+            app:destination="@id/fullInfoFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/chat_fragment"
@@ -88,6 +94,9 @@
         <action
             android:id="@+id/action_chatFragment_to_listOfChatsFragment"
             app:destination="@id/listOfChatsFragment" />
+        <action
+            android:id="@+id/action_chatFragment_to_fullInfoFragment"
+            app:destination="@id/fullInfoFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/list_of_chats_fragment"
@@ -111,5 +120,27 @@
         android:id="@+id/mapFragment"
         android:name="com.example.mainproject.fragment.MapFragment"
         android:label="fragment_map"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_fullInfoFragment"
+            app:destination="@id/fullInfoFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/full_info_fragment"
+        android:id="@+id/fullInfoFragment"
+        android:name="com.example.mainproject.fragment.FullInfoFragment"
+        android:label="FullInfoFragment" >
+        <action
+            android:id="@+id/action_fullInfoFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_fullInfoFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_fullInfoFragment_to_favouritesFragment"
+            app:destination="@id/favouritesFragment" />
+        <action
+            android:id="@+id/action_fullInfoFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
 </navigation>

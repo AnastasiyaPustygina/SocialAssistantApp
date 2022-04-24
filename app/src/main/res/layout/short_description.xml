@@ -24,8 +24,8 @@
             app:layout_constraintRight_toRightOf="parent">
 
 
-            <Spinner
-                android:id="@+id/sp_shDes_fullInfo"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bt_shDes_fullInfo"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:layout_marginLeft="10dp"

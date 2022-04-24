@@ -66,6 +66,22 @@ public class ChatFragment extends Fragment {
             rec.scrollToPosition(openHelper.findMsgByChatId(
                     openHelper.findChatIdByOrgIdAndPerId(org.getId(),perId)).size() - 1);
         }catch (CursorIndexOutOfBoundsException ignored){}
+        imOrg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundleForFullDesc = new Bundle();
+                bundleForFullDesc.putString("LOG", getArguments().getString("LOG"));
+                bundleForFullDesc.putString("NameOrg", getArguments().getString("NameOrg"));
+                bundleForFullDesc.putString("PrevFragment", "chat");
+                imOrg.setOnClickListener((view1) -> {
+                    NavHostFragment.
+                            findNavController(ChatFragment.this).navigate(
+                            R.id.action_chatFragment_to_fullInfoFragment, bundleForFullDesc);
+                });
+                imOrg.performClick();
+
+            }
+        });
         bt_arrow_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -26,11 +27,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.R;
+import com.example.mainproject.fragment.FavouritesFragment;
 import com.example.mainproject.fragment.ListFragment;
+import com.example.mainproject.fragment.MapFragment;
 import com.example.mainproject.model.Chat;
 import com.example.mainproject.model.Organization;
 import com.example.mainproject.model.Person;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHolder>{
@@ -86,15 +90,37 @@ public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHo
                 openHelper1.changeFavOrg(nameOfPerson, organization.getName());
             }
         });
-        ArrayAdapter<String> adaptDet = new ArrayAdapter<String>(
-                context,R.layout.for_spinner, context.getResources().getStringArray(R.array.fullInfo) );
-        holder.fullInfo.setAdapter(adaptDet);
-        holder.fullInfo.setBackgroundResource(R.drawable.bt_full_info);
-        holder.fullInfo.setForeground(context.getDrawable(R.drawable.bt_full_info));
-        holder.fullInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        holder.fullInfo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("NameOrg", holder.nameOrg.getText().toString());
+                bundle.putString("LOG", nameOfPerson);
+                if(fragment.getClass().equals(ListFragment.class)) {
+                    bundle.putString("PrevFragment", "list");
+                    holder.fullInfo.setOnClickListener((view1) -> {
+                        NavHostFragment.
+                                findNavController(fragment).navigate(
+                                R.id.action_listFragment_to_fullInfoFragment, bundle);
+                    });
+                }
+                else if(fragment.getClass().equals(FavouritesFragment.class)) {
+                    bundle.putString("PrevFragment", "fav");
+                    holder.fullInfo.setOnClickListener((view1) -> {
+                        NavHostFragment.
+                                findNavController(fragment).navigate(
+                                R.id.action_favouritesFragment_to_fullInfoFragment, bundle);
+                    });
+                }
+                else if(fragment.getClass().equals(MapFragment.class)) {
+                    bundle.putString("PrevFragment", "map");
+                    holder.fullInfo.setOnClickListener((view1) -> {
+                        NavHostFragment.
+                                findNavController(fragment).navigate(
+                                R.id.action_mapFragment_to_fullInfoFragment, bundle);
+                    });
+                }
+                holder.fullInfo.performClick();
             }
         });
         holder.btHelp.setOnClickListener(new View.OnClickListener() {
@@ -140,8 +166,7 @@ public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHo
          TextView nameOrg, typeOrg, needsOrg;
          ImageView ph;
          AppCompatButton btIdenFav;
-         AppCompatButton btHelp;
-         Spinner fullInfo;
+         AppCompatButton btHelp, fullInfo;
 
 
         ViewHolder(@NonNull View itemView) {
@@ -152,7 +177,7 @@ public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHo
              needsOrg = itemView.findViewById(R.id.shDes_needs);
              ph = itemView.findViewById(R.id.shDes_photoOrg);
              btHelp = itemView.findViewById(R.id.bt_shDes_help);
-             fullInfo = itemView.findViewById(R.id.sp_shDes_fullInfo);
+             fullInfo = itemView.findViewById(R.id.bt_shDes_fullInfo);
 
         }
     }
