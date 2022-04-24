@@ -12,9 +12,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.FragmentTransactionKt;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mainproject.MainActivity;
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.R;
 import com.example.mainproject.fragment.ListOfChatsFragment;
@@ -49,6 +53,7 @@ public class ChatListArrayAdapter extends RecyclerView.Adapter<ChatListArrayAdap
         ArrayList<String> arrListLastMsg = openHelper.findLastMsgValuesByPerName(name);
         ArrayList<Integer> arrListChatId = openHelper.findLastChatId();
         ArrayList<Organization> arrayListLastOrg = new ArrayList<>();
+
         for (int i = 0; i < arrListChatId.size(); i++) {
             try {
                 arrayListLastOrg.add(openHelper.findOrgByChatId(arrListChatId.get(i)));
@@ -64,6 +69,7 @@ public class ChatListArrayAdapter extends RecyclerView.Adapter<ChatListArrayAdap
             holder.tvNameOrg.setText(arrayListLastOrg.get(arrayListLastOrg.size() - position - 1).getName());
             Bundle bundle = new Bundle();
             bundle.putString("LOG", name);
+
             bundle.putString("NameOrg", arrayListLastOrg.get(arrayListLastOrg.size() - position - 1).getName());
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

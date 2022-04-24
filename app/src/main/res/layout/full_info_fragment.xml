@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white1"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_marginTop="20dp"
+                    android:background="@color/white1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                <LinearLayout
+                    android:background="@color/white1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/blue_arrow_back"
+                    android:layout_weight="2"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:text="Профиль организации"
+                    android:textColor="@color/purple_700"
+                    android:textSize="25dp"
+                    android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="372dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:background="@color/ic_channel_background"
+
+            android:src="@mipmap/ic_channel" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:gravity="left"
+            android:textStyle="bold"
+            android:text="НАЗВАНИЕ"
+            android:textColor="@color/black"
+            android:textSize="18dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:gravity="left"
+            android:text="Тип: "
+            android:textColor="@color/for_first_ava"
+            android:textSize="13dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:gravity="left"
+            android:text="Описание: "
+            android:textColor="@color/for_first_ava"
+            android:textSize="13dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:gravity="left"
+            android:text="Адрес: "
+            android:textColor="@color/for_first_ava"
+            android:textSize="13dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:gravity="left"
+            android:text="Потребности: "
+            android:textColor="@color/for_first_ava"
+            android:textSize="13dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:gravity="left"
+            android:text="Официальный сайт"
+            android:textColor="@color/for_first_ava"
+            android:textSize="13dp" />
+                </LinearLayout>
+
+        </ScrollView>
+    </FrameLayout>

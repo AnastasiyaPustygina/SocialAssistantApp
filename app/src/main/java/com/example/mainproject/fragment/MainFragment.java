@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.mainproject.OpenHelper;
@@ -78,7 +79,7 @@ public class MainFragment extends Fragment {
                 bt_fav.performClick();
             }
         });
-        bt_list.setOnClickListener(new View.OnClickListener() {
+                bt_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 bt_fav.setOnClickListener((view1) -> {
