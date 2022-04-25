@@ -1,14 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.MapFragment">
-
+    android:orientation="vertical">
+    <FrameLayout
+        android:layout_weight="10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <fragment
         android:id="@+id/google_map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
+    </FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/purple_700"
+        android:layout_weight="1">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_fav_map"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/bt_favorites"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_fav_chat"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="5sp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/white"
+            android:background="@drawable/bt_msg_dark"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/white"
+            android:background="@drawable/bt_map_dark"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_fav_list"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/white"
+            android:background="@drawable/bt_list_dark"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_fav_prof"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/white"
+            android:background="@drawable/bt_profile_dark"/>
 
-</RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

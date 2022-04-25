@@ -14,19 +14,25 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.mainproject.OpenHelper;
 import com.example.mainproject.R;
+import com.example.mainproject.model.Organization;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment  {
 
     private static final int request_Code = 1;
 
@@ -65,36 +71,49 @@ public class MapFragment extends Fragment {
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, request_Code );
                 }
                 googleMap.setMyLocationEnabled(true);
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(getLocationFromAddress("London"));
-                markerOptions.title("LONDON");
-                googleMap.addMarker(markerOptions);
+                OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
+                Toast.makeText(getContext(),
+                        openHelper.findPersonByLogin(getArguments().getString("LOG")).getCity(), Toast.LENGTH_LONG).show();
+                try {
+                    LatLng latLng = getLocationFromAddress("Moscow, Parshina street, 8", googleMap);
+                    Marker parshinaMarker = googleMap.addMarker(new MarkerOptions().position(latLng).
+                            title("Address3"));
+                    googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(@NonNull Marker marker) {
+                            Organization organization = openHelper.findOrgByAddress(marker.getTitle());
+                            ArrayList<Organization> arrayListOrg = new ArrayList<>();
+                            arrayListOrg.add(organization);
+
+                            return false;
+                        }
+                    });
+                    latLng = getLocationFromAddress("Moscow, Perovskaya street, 1", googleMap);
+                    Marker perovskayaMarker = googleMap.addMarker(new MarkerOptions().position(latLng).
+                            title("SecondAddress"));
+                }catch (Exception e){
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return view;
     }
-    public LatLng getLocationFromAddress(String strAddress) {
-
+    public LatLng getLocationFromAddress(String strAddress, GoogleMap mMap) {
         Geocoder coder = new Geocoder(getContext());
+        LatLng latLng = null;
         List<Address> address;
-        LatLng p1 = null;
 
         try {
             address = coder.getFromLocationName(strAddress, 5);
             if (address == null) {
-                return null;
+                return latLng;
             }
             Address location = address.get(0);
-            location.getLatitude();
-            location.getLongitude();
-
-            p1 = new LatLng((double) (location.getLatitude() * 1E6),
-                    (double) (location.getLongitude() * 1E6));
-
-            return p1;
+            latLng = new LatLng(location.getLatitude(), location.getLongitude());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return latLng;
     }
+
 }

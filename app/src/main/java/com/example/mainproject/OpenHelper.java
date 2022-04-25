@@ -291,7 +291,7 @@ public class OpenHelper extends SQLiteOpenHelper {
                 }
             }while (cur.moveToNext());
         }
-        return new Person(null, null, 0, null, null, null);
+        return new Person(100, null, null, 0, null, null, null);
     }
 
     public Organization findOrgByName(String nameOrg){
@@ -311,6 +311,31 @@ public class OpenHelper extends SQLiteOpenHelper {
                 String link = cur.getString(cur.getColumnIndexOrThrow(COLUMN_LINKWEB));
 
                 if(name.equals(nameOrg)) {
+                    return new Organization(id, name, type, BitmapFactory.decodeByteArray(
+                            photo, 0, photo.length), desc, address, needs, link);
+                }
+            }while (cur.moveToNext());
+        }
+        return new Organization(100, null, null, null,null,
+                null, null, null);
+    }
+    public Organization findOrgByAddress(String addr){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cur = db.query(TABLE_ORG_NAME, null, null,
+                null, null, null, null);
+        cur.moveToFirst();
+        if(!cur.isAfterLast()){
+            do{
+                int id = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_ORGANIZATION_ID));
+                String name = cur.getString(cur.getColumnIndexOrThrow(COLUMN_ORGNAME));
+                String type = cur.getString(cur.getColumnIndexOrThrow(COLUMN_TYPE));
+                byte[] photo = cur.getBlob(cur.getColumnIndexOrThrow(COLUMN_PHOTOORG));
+                String desc = cur.getString(cur.getColumnIndexOrThrow(COLUMN_DESCRIPTION));
+                String address = cur.getString(cur.getColumnIndexOrThrow(COLUMN_ADDRESS));
+                String needs = cur.getString(cur.getColumnIndexOrThrow(COLUMN_NEEDS));
+                String link = cur.getString(cur.getColumnIndexOrThrow(COLUMN_LINKWEB));
+
+                if(address.equals(addr)) {
                     return new Organization(id, name, type, BitmapFactory.decodeByteArray(
                             photo, 0, photo.length), desc, address, needs, link);
                 }
@@ -512,9 +537,9 @@ public class OpenHelper extends SQLiteOpenHelper {
                 String favOrg = cursor.getString(columnFavIndex);
                 arr_fav_org.add(favOrg);
                 String data = telephone == null ? email : telephone;
-                people.add(new Person(data, name, age, dateOfBirth, city, password, arr_fav_org));
-                arr_fav_org.clear();
-            }while (cursor.moveToNext());} catch (Exception e){
+                people.add(new Person(id, data, name, age, dateOfBirth, city, password));
+            }while (cursor.moveToNext());
+        } catch (Exception e){
             Log.e("MY_LOG", e.getMessage());
         };
         return people;
