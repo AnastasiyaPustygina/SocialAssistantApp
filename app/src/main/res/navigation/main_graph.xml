@@ -64,6 +64,9 @@
         <action
             android:id="@+id/action_favouritesFragment_to_fullInfoFragment"
             app:destination="@id/fullInfoFragment" />
+        <action
+            android:id="@+id/action_favouritesFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
     </fragment>
     <fragment
         android:id="@+id/listFragment"
@@ -85,6 +88,9 @@
         <action
             android:id="@+id/action_listFragment_to_fullInfoFragment"
             app:destination="@id/fullInfoFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/chat_fragment"
@@ -115,6 +121,9 @@
         <action
             android:id="@+id/action_listOfChatsFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_listOfChatsFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
@@ -124,6 +133,18 @@
         <action
             android:id="@+id/action_mapFragment_to_fullInfoFragment"
             app:destination="@id/fullInfoFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_favouritesFragment"
+            app:destination="@id/favouritesFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_listOfChatsFragment"
+            app:destination="@id/listOfChatsFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/full_info_fragment"

@@ -39,7 +39,6 @@
             android:background="@color/purple_700"
             android:layout_weight="1">
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/bt_fav_map"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
                 android:layout_gravity="center"
@@ -58,6 +57,7 @@
                 android:textColor="@color/white"
                 android:background="@drawable/bt_msg_dark"/>
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bt_fav_map"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
                 android:layout_gravity="center"

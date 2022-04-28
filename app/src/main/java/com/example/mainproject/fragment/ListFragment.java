@@ -77,6 +77,18 @@ public class ListFragment extends Fragment {
                 btChat.performClick();
             }
         });
+        AppCompatButton btMap = getActivity().findViewById(R.id.bt_list_map);
+        btMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btMap.setOnClickListener((view1) -> {
+                    NavHostFragment.
+                            findNavController(ListFragment.this).navigate(
+                            R.id.action_listFragment_to_mapFragment, bundleLog);
+                });
+                btMap.performClick();
+            }
+        });
 
     }
 }

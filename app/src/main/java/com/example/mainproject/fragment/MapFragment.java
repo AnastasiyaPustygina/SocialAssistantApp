@@ -8,8 +8,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +36,9 @@ import java.util.List;
 
 public class MapFragment extends Fragment  {
 
+    private static boolean isTouch = false;
+    private static LatLng firstLatLng = new LatLng(0, 0);
+    private AppCompatButton bt_fav, bt_list, bt_chat, bt_prof;
     private static final int request_Code = 1;
 
     @Override
@@ -70,10 +75,13 @@ public class MapFragment extends Fragment  {
                 ){
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, request_Code );
                 }
+                if(isTouch) {
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                            firstLatLng, 10
+                    ));
+                }
                 googleMap.setMyLocationEnabled(true);
                 OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
-                Toast.makeText(getContext(),
-                        openHelper.findPersonByLogin(getArguments().getString("LOG")).getCity(), Toast.LENGTH_LONG).show();
                 try {
                     LatLng latLng = getLocationFromAddress("Moscow, Parshina street, 8", googleMap);
                     Marker parshinaMarker = googleMap.addMarker(new MarkerOptions().position(latLng).
@@ -82,15 +90,28 @@ public class MapFragment extends Fragment  {
                         @Override
                         public boolean onMarkerClick(@NonNull Marker marker) {
                             Organization organization = openHelper.findOrgByAddress(marker.getTitle());
-                            ArrayList<Organization> arrayListOrg = new ArrayList<>();
-                            arrayListOrg.add(organization);
-
-                            return false;
+                            Bundle bundle = new Bundle();
+                            bundle.putString("NameOrg", organization.getName());
+                            bundle.putString("LOG", getArguments().getString("LOG"));
+                            bundle.putString("PrevFragment", "map");
+                            firstLatLng = marker.getPosition();
+                            AppCompatButton appCompatButton = new AppCompatButton(getContext());
+                            appCompatButton.setOnClickListener((view1) -> {
+                                NavHostFragment.
+                                        findNavController(MapFragment.this).navigate(
+                                        R.id.action_mapFragment_to_fullInfoFragment, bundle);
+                            });
+                            appCompatButton.performClick();
+                            isTouch = true;
+                            return true;
                         }
                     });
                     latLng = getLocationFromAddress("Moscow, Perovskaya street, 1", googleMap);
                     Marker perovskayaMarker = googleMap.addMarker(new MarkerOptions().position(latLng).
                             title("SecondAddress"));
+                    latLng = getLocationFromAddress("Moscow, Mohovaya street, 4", googleMap);
+                    Marker mohovayaMarker = googleMap.addMarker(new MarkerOptions().position(latLng).
+                            title("Address"));
                 }catch (Exception e){
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
@@ -98,6 +119,63 @@ public class MapFragment extends Fragment  {
         });
         return view;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        bt_prof = getActivity().findViewById(R.id.bt_map_prof);
+        bt_fav = getActivity().findViewById(R.id.bt_map_fav);
+        bt_list = getActivity().findViewById(R.id.bt_map_list);
+        bt_chat = getActivity().findViewById(R.id.bt_map_chat);
+        Bundle bundleLog = new Bundle();
+        bundleLog.putString("LOG", getArguments().getString("LOG"));
+        bt_chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bt_chat.setOnClickListener((view1) -> {
+                    NavHostFragment.
+                            findNavController(MapFragment.this).navigate(
+                            R.id.action_mapFragment_to_listOfChatsFragment, bundleLog);
+                });
+                bt_chat.performClick();
+            }
+        });
+        bt_fav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bt_fav.setOnClickListener((view1) -> {
+                    NavHostFragment.
+                            findNavController(MapFragment.this).navigate(
+                            R.id.action_mapFragment_to_favouritesFragment, bundleLog);
+                });
+                bt_fav.performClick();
+            }
+        });
+        bt_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bt_list.setOnClickListener((view1) -> {
+                    NavHostFragment.
+                            findNavController(MapFragment.this).navigate(
+                            R.id.action_mapFragment_to_listFragment, bundleLog);
+                });
+                bt_list.performClick();
+            }
+        });
+        bt_prof.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bt_prof.setOnClickListener((view1) -> {
+                    NavHostFragment.
+                            findNavController(MapFragment.this).navigate(
+                            R.id.action_mapFragment_to_mainFragment, bundleLog);
+                });
+                bt_prof.performClick();
+            }
+        });
+
+    }
+
     public LatLng getLocationFromAddress(String strAddress, GoogleMap mMap) {
         Geocoder coder = new Geocoder(getContext());
         LatLng latLng = null;

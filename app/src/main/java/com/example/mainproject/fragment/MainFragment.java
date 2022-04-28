@@ -82,12 +82,12 @@ public class MainFragment extends Fragment {
                 bt_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bt_fav.setOnClickListener((view1) -> {
+                bt_list.setOnClickListener((view1) -> {
                     NavHostFragment.
                             findNavController(MainFragment.this).navigate(
                             R.id.action_mainFragment_to_listFragment, bundleLog);
                 });
-                bt_fav.performClick();
+                bt_list.performClick();
             }
         });
         bt_chat.setOnClickListener(new View.OnClickListener() {

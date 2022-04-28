@@ -30,6 +30,7 @@ public class FavouritesFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
         bt_prof = getActivity().findViewById(R.id.bt_fav_prof);
         bt_list = getActivity().findViewById(R.id.bt_fav_list);
         ArrayList<Organization> arListOrg = new ArrayList<Organization>();
@@ -78,6 +79,18 @@ public class FavouritesFragment extends Fragment {
                             R.id.action_favouritesFragment_to_listOfChatsFragment, bundleLog);
                 });
                 btChat.performClick();
+            }
+        });
+        AppCompatButton btMap = getActivity().findViewById(R.id.bt_fav_map);
+        btMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btMap.setOnClickListener((view1) -> {
+                    NavHostFragment.
+                            findNavController(FavouritesFragment.this).navigate(
+                            R.id.action_favouritesFragment_to_mapFragment, bundleLog);
+                });
+                btMap.performClick();
             }
         });
         }

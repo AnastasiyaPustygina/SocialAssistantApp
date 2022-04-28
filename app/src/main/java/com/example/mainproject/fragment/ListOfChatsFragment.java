@@ -28,7 +28,8 @@ public class ListOfChatsFragment extends Fragment {
         ChatListArrayAdapter chatListArrayAdaptor = new ChatListArrayAdapter(getContext(),
                 ListOfChatsFragment.this, getArguments().getString("LOG"));
         recyclerView.setAdapter(chatListArrayAdaptor);
-        AppCompatButton btFav, btProfile, btList;
+        AppCompatButton btFav, btProfile, btList, btMap;
+        btMap = getActivity().findViewById(R.id.bt_listOfChats_maps);
         btFav = getActivity().findViewById(R.id.bt_listOfChats_fav);
         btProfile = getActivity().findViewById(R.id.bt_listOfChats_profile);
         btList = getActivity().findViewById(R.id.bt_listOfChats_list);
@@ -67,6 +68,16 @@ public class ListOfChatsFragment extends Fragment {
                 btList.performClick();
             }
         });
-
+        btMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btMap.setOnClickListener((view1) -> {
+                    NavHostFragment.
+                            findNavController(ListOfChatsFragment.this).navigate(
+                            R.id.action_listOfChatsFragment_to_mapFragment, bundleLog);
+                });
+                btMap.performClick();
+            }
+        });
     }
 }
