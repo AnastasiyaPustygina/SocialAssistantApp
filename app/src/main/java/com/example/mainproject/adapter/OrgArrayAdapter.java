@@ -3,20 +3,14 @@ package com.example.mainproject.adapter;
 import android.content.Context;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -30,11 +24,10 @@ import com.example.mainproject.R;
 import com.example.mainproject.fragment.FavouritesFragment;
 import com.example.mainproject.fragment.ListFragment;
 import com.example.mainproject.fragment.MapFragment;
-import com.example.mainproject.model.Chat;
-import com.example.mainproject.model.Organization;
-import com.example.mainproject.model.Person;
+import com.example.mainproject.domain.Chat;
+import com.example.mainproject.domain.Organization;
+import com.example.mainproject.domain.Person;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHolder>{
@@ -45,7 +38,6 @@ public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHo
 
     private String nameOfPerson;
     private Fragment fragment;
-    private View.OnTouchListener onTouchListener;
 
     public OrgArrayAdapter(Context context, List<Organization> arrayOrg, String nameOfPerson,
                            Fragment fragment) {

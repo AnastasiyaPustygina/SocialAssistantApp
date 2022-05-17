@@ -1,9 +1,8 @@
 package com.example.mainproject.fragment;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -22,14 +21,17 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.R;
-import com.example.mainproject.model.Organization;
+import com.example.mainproject.domain.Organization;
 
 public class FullInfoFragment extends Fragment {
 
     private ImageView photoOrg;
     private TextView name, type, desc, address, needs, link;
-    AppCompatButton bt_help;
-    ImageView bt_prev;
+    private AppCompatButton bt_help;
+    private ImageView bt_prev;
+    private final int height  = Resources.getSystem().getDisplayMetrics().heightPixels;
+    private final int width  = Resources.getSystem().getDisplayMetrics().widthPixels;
+    private float scale = Resources.getSystem().getDisplayMetrics().density;
 
 
 
@@ -74,6 +76,49 @@ public class FullInfoFragment extends Fragment {
             link.setText(Html.fromHtml("Официальный сайт: \n \n" +tmp));
         }
         else link.setText("Официальный сайт: \n \n" + "(не указан)");
+
+        int data = Math.max(width, height);
+        int size20 = (int) (scale * (data / 80) + 0.5f);
+        int size10 = (int) (scale * (data / 140) + 0.5f);
+        int size40 = (int) (scale * (data / 45) + 0.5f);
+        int size60 = (int) (scale * (data / 30) + 0.5f);
+        int size30 = (int) (scale * (data / 70) + 0.5f);
+        int size80 = (int) (scale * (data / 20) + 0.5f);
+        float sizeForTV15 = (float) data / 160;
+
+        TextView tv_prof = getActivity().findViewById(R.id.tv_fullInfo_profile);
+        ViewGroup.MarginLayoutParams paramsProf = (ViewGroup.MarginLayoutParams) tv_prof.getLayoutParams();
+        paramsProf.setMargins(0, size60, 0, size60);
+        tv_prof.requestLayout();
+        ViewGroup.MarginLayoutParams paramsArrow = (ViewGroup.MarginLayoutParams) bt_prev.getLayoutParams();
+        paramsArrow.setMargins(size10, 0, 0, 0);
+        bt_prev.requestLayout();
+        tv_prof.setTextSize((float) (data / 100));
+        name.setTextSize((float) data / 130);
+        name.setPadding(0, size20, 0, size20);
+        photoOrg.setPadding(size20, 0, 0, 0);
+        type.setTextSize(sizeForTV15);
+        type.setPadding(size20, size40, size20, size10);
+
+        desc.setTextSize(sizeForTV15);
+        desc.setPadding(size20, size20, size20, size10);
+
+        address.setTextSize(sizeForTV15);
+        address.setPadding(size20, size20, size20, size10);
+
+        needs.setTextSize(sizeForTV15);
+        needs.setPadding(size20, size20, size20, size10);
+
+        link.setTextSize(sizeForTV15);
+        link.setPadding(size20, size20, size20, size10);
+
+        bt_help.setTextSize(sizeForTV15);
+
+        ViewGroup.MarginLayoutParams paramsBt = (ViewGroup.MarginLayoutParams) bt_help.getLayoutParams();
+        paramsBt.setMargins(size30, size40, size30, size80);
+        bt_help.requestLayout();
+
+
         bt_help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

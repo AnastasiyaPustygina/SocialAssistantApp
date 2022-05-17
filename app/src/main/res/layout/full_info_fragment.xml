@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white1"
@@ -7,165 +7,155 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-            <LinearLayout
-                android:layout_marginTop="20dp"
-                android:background="@color/white1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+        <LinearLayout
+            android:background="@color/white1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white1"
+                android:orientation="horizontal">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_weight="1">
+                <ImageView
+                    android:id="@+id/bt_fullInfo_arrowBack"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:baselineAligned="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.22"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="1"
+                    android:src="@drawable/blue_arrow_back" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/tv_fullInfo_profile"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:background="@color/white1"
-                    android:orientation="horizontal">
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="Профиль организации"
+                    android:textColor="@color/purple_700"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
                     <ImageView
-                        android:id="@+id/bt_fullInfo_arrowBack"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="2"
-                        android:baselineAligned="false"
-                        android:src="@drawable/blue_arrow_back" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="20dp"
-                        android:layout_weight="5"
-                        android:gravity="center"
-                        android:text="Профиль организации"
-                        android:textColor="@color/purple_700"
-                        android:textSize="20dp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                <ImageView
-                    android:id="@+id/iv_fullInfo_photoOrg"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginBottom="30dp"
-                    android:src="@mipmap/ic_channel"
-                    android:background="@drawable/circle_ava"/>
-                    <TextView
-                        android:id="@+id/tv_fullInfo_nameOrg"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:textStyle="bold"
-                        android:text="НАЗВАНИЕ"
-
-                        android:textColor="@color/black"
-                        android:textSize="18dp" />
-                    </LinearLayout>
-                    <TextView
-                        android:id="@+id/tv_fullInfo_typeOrg"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="20dp"
-                        android:gravity="left"
-                        android:text="Тип: "
-                        android:textColor="@color/for_first_ava"
-                        android:textSize="15dp" />
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/forEdit" />
-                    <TextView
-                        android:id="@+id/tv_fullInfo_descOrg"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginEnd="20dp"
-                        android:gravity="left"
-                        android:text="Описание: "
-                        android:textColor="@color/for_first_ava"
-                        android:textSize="15dp" />
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/forEdit" />
-                    <TextView
-                        android:id="@+id/tv_fullInfo_addressOrg"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginEnd="20dp"
-                        android:gravity="left"
-                        android:text="Адрес: "
-                        android:textColor="@color/for_first_ava"
-                        android:textSize="15dp" />
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/forEdit" />
-                    <TextView
-                        android:id="@+id/tv_fullInfo_needsOrg"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginEnd="20dp"
-                        android:gravity="left"
-                        android:text="Потребности: "
-                        android:textColor="@color/for_first_ava"
-                        android:textSize="15dp" />
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/forEdit" />
+                        android:id="@+id/iv_fullInfo_photoOrg"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:src="@mipmap/ic_channel"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHeight_percent="1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintWidth_percent="1" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
-                    android:id="@+id/tv_fullInfo_linkToWeb"
-                    android:layout_width="match_parent"
+                    android:id="@+id/tv_fullInfo_nameOrg"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="20dp"
-                    android:gravity="left"
-                    android:text="Официальный сайт"
-                    android:textColor="@color/for_first_ava"
-                    android:textSize="15dp" />
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/forEdit" />
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/bt_fullInfo_help"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="40dp"
-                        android:layout_marginRight="30dp"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginBottom="80dp"
-                        android:background="@drawable/dark_circle_button"
-                        android:text="  Откликнуться  "
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:text="НАЗВАНИЕ"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
             </LinearLayout>
+            <TextView
+                android:id="@+id/tv_fullInfo_typeOrg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Тип: "
+                android:textColor="@color/for_first_ava"
+                android:textSize="15dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/forEdit" />
+            <TextView
+                android:id="@+id/tv_fullInfo_descOrg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Описание: "
+                android:textColor="@color/for_first_ava"
+                android:textSize="15dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/forEdit" />
+            <TextView
+                android:id="@+id/tv_fullInfo_addressOrg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Адрес: "
+                android:textColor="@color/for_first_ava"
+                android:textSize="15dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/forEdit" />
+            <TextView
+                android:id="@+id/tv_fullInfo_needsOrg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Потребности: "
+                android:textColor="@color/for_first_ava"
+                android:textSize="15dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/forEdit" />
+
+            <TextView
+                android:id="@+id/tv_fullInfo_linkToWeb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Официальный сайт"
+                android:textColor="@color/for_first_ava"
+                android:textSize="15dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/forEdit" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bt_fullInfo_help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginBottom="80dp"
+                android:background="@drawable/dark_circle_button"
+                android:text="  Откликнуться  "
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </LinearLayout>
     </ScrollView>
 </FrameLayout>

@@ -1,6 +1,5 @@
 package com.example.mainproject.fragment;
 
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -19,8 +18,8 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.R;
-import com.example.mainproject.model.Organization;
-import com.example.mainproject.model.Person;
+import com.example.mainproject.domain.Person;
+import com.example.mainproject.rest.AppApiVolley;
 
 public class RegFragment extends Fragment {
 
@@ -134,8 +133,10 @@ public class RegFragment extends Fragment {
                                 "OpenHelder",
                                 null, OpenHelper.VERSION
                         );
-                        openHelper.insert(new Person(
-                                data, name, age, dateOfBirth, city, password1));
+                        Bitmap bitmap = BitmapFactory.decodeResource(
+                                getResources(), R.drawable.image_for_checking);
+                        new AppApiVolley(getContext()).addPerson
+                                (new Person(data, name, bitmap, age, dateOfBirth, city, password1));
                         bt_reg_fr_reg.setOnClickListener((view1) -> {
                             NavHostFragment.
                                     findNavController(RegFragment.this).navigate(

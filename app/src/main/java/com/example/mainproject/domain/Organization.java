@@ -1,14 +1,8 @@
-package com.example.mainproject.model;
+package com.example.mainproject.domain;
 
 import android.graphics.Bitmap;
-import android.graphics.ImageFormat;
-import android.media.Image;
-import android.net.LinkAddress;
-import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Arrays;
 
 public class Organization {
@@ -108,7 +102,6 @@ public class Organization {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +
-                ", photoOrg=" + Arrays.toString(photoOrg) +
                 ", description='" + description + '\'' +
                 ", address='" + address + '\'' +
                 ", needs='" + needs + '\'' +

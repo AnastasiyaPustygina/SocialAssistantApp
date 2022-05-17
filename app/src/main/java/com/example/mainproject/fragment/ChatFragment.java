@@ -11,22 +11,18 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.R;
 import com.example.mainproject.adapter.ChatArrayAdapter;
-import com.example.mainproject.model.Message;
-import com.example.mainproject.model.Organization;
+import com.example.mainproject.domain.Message;
+import com.example.mainproject.domain.Organization;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,10 +30,9 @@ import java.util.Locale;
 
 public class ChatFragment extends Fragment {
 
-    private ImageView imOrg, ivMicro;
+    private ImageView imOrg, ivMicro, bt_arrow_back;
     private TextView nameOrg;
     private EditText et_msg;
-    private AppCompatButton bt_arrow_back;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.chat_fragment, container, false);

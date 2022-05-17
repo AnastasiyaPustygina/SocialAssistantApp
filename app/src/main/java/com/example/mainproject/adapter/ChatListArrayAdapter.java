@@ -12,17 +12,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.fragment.app.FragmentTransactionKt;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mainproject.MainActivity;
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.R;
 import com.example.mainproject.fragment.ListOfChatsFragment;
-import com.example.mainproject.model.Organization;
+import com.example.mainproject.domain.Organization;
 
 import java.util.ArrayList;
 
@@ -51,7 +47,7 @@ public class ChatListArrayAdapter extends RecyclerView.Adapter<ChatListArrayAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         OpenHelper openHelper = new OpenHelper(context, "OpenHelder", null, OpenHelper.VERSION);
         ArrayList<String> arrListLastMsg = openHelper.findLastMsgValuesByPerName(name);
-        ArrayList<Integer> arrListChatId = openHelper.findLastChatId();
+        ArrayList<Integer> arrListChatId = openHelper.findLastChatIdByLogin(name);
         ArrayList<Organization> arrayListLastOrg = new ArrayList<>();
 
         for (int i = 0; i < arrListChatId.size(); i++) {

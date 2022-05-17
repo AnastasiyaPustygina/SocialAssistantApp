@@ -1,10 +1,10 @@
 package com.example.mainproject.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,12 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.adapter.OrgArrayAdapter;
 import com.example.mainproject.R;
-import com.example.mainproject.model.Organization;
+import com.example.mainproject.domain.Organization;
 
 import java.util.ArrayList;
 
 public class ListFragment extends Fragment {
     private AppCompatButton bt_prof, bt_fav;
+    private OrgArrayAdapter orgArrayAdapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,11 +34,10 @@ public class ListFragment extends Fragment {
         super.onStart();
         bt_prof = getActivity().findViewById(R.id.bt_list_prof);
         bt_fav = getActivity().findViewById(R.id.bt_list_fav);
-        ArrayList<Organization> arListOrg;
         OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
-        arListOrg = openHelper.findAllOrganizations();
+        ArrayList<Organization> arListOrg = openHelper.findAllOrganizations();
         RecyclerView recyclerView = getActivity().findViewById(R.id.rec_list);
-        OrgArrayAdapter orgArrayAdapter =
+        orgArrayAdapter =
                 new OrgArrayAdapter(getContext(), arListOrg, getArguments().getString("LOG"),
                         this);
         recyclerView.setAdapter(orgArrayAdapter);
@@ -65,6 +65,7 @@ public class ListFragment extends Fragment {
                 bt_fav.performClick();
             }
         });
+
         AppCompatButton btChat = getActivity().findViewById(R.id.bt_list_chat);
         btChat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,4 +92,8 @@ public class ListFragment extends Fragment {
         });
 
     }
+    public void updateAdapter(){
+        try {
+            orgArrayAdapter.notifyDataSetChanged();
+        }catch (Exception ignored){};}
 }

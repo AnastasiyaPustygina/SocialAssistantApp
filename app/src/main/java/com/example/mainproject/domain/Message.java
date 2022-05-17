@@ -1,4 +1,4 @@
-package com.example.mainproject.model;
+package com.example.mainproject.domain;
 
 public class Message {
     private int id;

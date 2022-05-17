@@ -1,6 +1,4 @@
-package com.example.mainproject.model;
-
-import android.content.SharedPreferences;
+package com.example.mainproject.domain;
 
 import java.util.Objects;
 

@@ -1,5 +1,8 @@
-package com.example.mainproject.model;
+package com.example.mainproject.domain;
 
+import android.graphics.Bitmap;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class Person {
@@ -7,18 +10,24 @@ public class Person {
     private String telephone;
     private String email;
     private String name;
+    private byte[] photoPer;
     private int age;
     private String dateOfBirth;
     private String city;
     private String password;
     private ArrayList<String> arr_fav_org = new ArrayList<>();
 
-    public Person(int id, String data, String name,
+    public Person(int id, String data, String name, Bitmap photoPer,
                   int age, String dateOfBirth, String city, String password) {
         this.id = id;
         if(data.contains("@")) this.email = data;
         else this.telephone = data;
         this.name = name;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Bitmap.CompressFormat imFor = Bitmap.CompressFormat.PNG;
+        photoPer.compress(imFor, 0, stream);
+        this.photoPer = stream.toByteArray();
+        photoPer.recycle();
         this.age = age;
         this.dateOfBirth = dateOfBirth;
         this.city = city;
@@ -26,28 +35,22 @@ public class Person {
         this.arr_fav_org = arr_fav_org;
     }
 
-    public Person(String data, String name, int age, String dateOfBirth,
+    public Person(String data, String name, Bitmap photoPer, int age, String dateOfBirth,
                   String city, String password) {
         if(data.contains("@")) this.email = data;
         else this.telephone = data;
         this.name = name;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Bitmap.CompressFormat imFor = Bitmap.CompressFormat.PNG;
+        photoPer.compress(imFor, 0, stream);
+        this.photoPer = stream.toByteArray();
+        photoPer.recycle();
         this.age = age;
         this.dateOfBirth = dateOfBirth;
         this.city = city;
         this.password = password;
     }
 
-    public Person(String data, String name, int age, String dateOfBirth,
-                  String city, String password, ArrayList<String> arr_fav_org) {
-        this.telephone = telephone;
-        this.email = email;
-        this.name = name;
-        this.age = age;
-        this.dateOfBirth = dateOfBirth;
-        this.city = city;
-        this.password = password;
-        this.arr_fav_org = arr_fav_org;
-    }
 
     public int getId() {
         return id;
@@ -88,6 +91,9 @@ public class Person {
         else arr_fav_org.add(nameOfOrg);
     }
 
+    public byte[] getPhotoPer() {
+        return photoPer;
+    }
 
     @Override
     public String toString() {

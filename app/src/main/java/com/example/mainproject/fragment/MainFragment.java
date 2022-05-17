@@ -1,28 +1,28 @@
 package com.example.mainproject.fragment;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.R;
-import com.example.mainproject.model.Person;
+import com.example.mainproject.domain.Person;
 
 public class MainFragment extends Fragment {
 
     private TextView tv_age, tv_city, tv_dateOfBirth, tv_data, tv_name, tv_forData;
-    private AppCompatButton bt_fav;
-    private AppCompatButton bt_list, bt_chat, bt_map;
+    private AppCompatButton bt_fav, bt_list, bt_chat, bt_map;
+    private ImageView iv_ava;
 
     @Nullable
     @Override
@@ -41,6 +41,7 @@ public class MainFragment extends Fragment {
         bt_map = getActivity().findViewById(R.id.bt_main_map);
         bt_list = getActivity().findViewById(R.id.bt_main_list);
         bt_fav = getActivity().findViewById(R.id.bt_main_fav);
+        iv_ava = getActivity().findViewById(R.id.iv_avaForFirstTime);
         tv_name = getActivity().findViewById(R.id.tv_main_name);
         tv_data = getActivity().findViewById(R.id.tv_main_data);
         tv_dateOfBirth = getActivity().findViewById(R.id.tv_main_dateOfBirth);
@@ -51,9 +52,12 @@ public class MainFragment extends Fragment {
         tv_name.setText(nameVal);
         bt_chat = getActivity().findViewById(R.id.bt_main_chat);
 
+
         OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
 
         Person client = openHelper.findPersonByLogin(nameVal);
+        iv_ava.setImageBitmap(BitmapFactory.decodeByteArray(
+                client.getPhotoPer(), 0, client.getPhotoPer().length));
         String dataValue;
         if(client.getTelephone() == null){
             tv_forData.setText("Адрес электронной почты: ");

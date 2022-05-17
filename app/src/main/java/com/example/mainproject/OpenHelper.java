@@ -3,23 +3,19 @@ package com.example.mainproject;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.example.mainproject.model.Chat;
-import com.example.mainproject.model.Message;
-import com.example.mainproject.model.Organization;
-import com.example.mainproject.model.Person;
+import com.example.mainproject.domain.Chat;
+import com.example.mainproject.domain.Message;
+import com.example.mainproject.domain.Organization;
+import com.example.mainproject.domain.Person;
 
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +40,7 @@ public class OpenHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ORGNAME = "orgName";
     public static final String COLUMN_TYPE = "type";
     public static final String COLUMN_PHOTOORG = "OrganizationPhoto";
+    public static final String COLUMN_PHOTOPERSON = "PersonPhoto";
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_ADDRESS = "address";
     public static final String COLUMN_NEEDS = "needs";
@@ -79,7 +76,8 @@ public class OpenHelper extends SQLiteOpenHelper {
         String query = "CREATE TABLE " + TABLE_PERSON_NAME + "(" +
                 COLUMN_PERSON_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_NAME + " TEXT, " +
-                COLUMN_AGE + " INTEGER, " +
+                COLUMN_PHOTOPERSON + " BLOB, "
+                + COLUMN_AGE + " INTEGER, " +
                 COLUMN_TELEPHONE + " TEXT, "
                 + COLUMN_EMAIL + " TEXT, "
                 + COLUMN_DATE_OF_BIRTH + " TEXT, "
@@ -121,6 +119,7 @@ public class OpenHelper extends SQLiteOpenHelper {
     public long insert(Person person) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_NAME, person.getName());
+        contentValues.put(COLUMN_PHOTOPERSON, person.getPhotoPer());
         contentValues.put(COLUMN_FAV_ORG, "");
         contentValues.put(COLUMN_TELEPHONE, person.getTelephone());
         contentValues.put(COLUMN_EMAIL, person.getEmail());
@@ -205,7 +204,20 @@ public class OpenHelper extends SQLiteOpenHelper {
         }
         return "";
     }
-
+    public void changeDescByLog(String name, String description){
+        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        sqLiteDatabase.execSQL("UPDATE " + TABLE_ORG_NAME + " SET " +
+                COLUMN_DESCRIPTION + " = '" + description + "' WHERE " + COLUMN_ORGNAME
+                + " = '" + name + "'");
+    }
+    public void changeNeedsByLog(String name, String needs){
+        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+        sqLiteDatabase.execSQL("UPDATE " + TABLE_ORG_NAME + " SET " +
+                COLUMN_NEEDS + " = '" + needs + "' WHERE " + COLUMN_ORGNAME
+                + " = '" + name + "'");
+    }
     public void changeFavOrg(String log, String nameOfOrg){
         SQLiteDatabase db = getWritableDatabase();
         String fav = "";
@@ -253,6 +265,7 @@ public class OpenHelper extends SQLiteOpenHelper {
         if(!cur.isAfterLast()){
             do{
                 int id = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_PERSON_ID));
+                byte[] photo = cur.getBlob(cur.getColumnIndexOrThrow(COLUMN_PHOTOPERSON));
                 String pass = cur.getString(cur.getColumnIndexOrThrow(COLUMN_PASSWORD));
                 int age = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_AGE));
                 String telephone = cur.getString(cur.getColumnIndexOrThrow(COLUMN_TELEPHONE));
@@ -263,11 +276,12 @@ public class OpenHelper extends SQLiteOpenHelper {
 
                 if(name.equals(log)) {
                     String data = telephone == null ? email : telephone;
-                    return new Person(id, data, name, age, dateOfBirth, city, pass);
+                    return new Person(id, data, name, BitmapFactory.decodeByteArray(
+                            photo, 0 ,photo.length), age, dateOfBirth, city, pass);
                 }
             }while (cur.moveToNext());
         }
-        return new Person(null, null, 0, null, null, null);
+        return new Person(null, null, null, 0, null, null, null);
     }
     public Person findPersonById(int idPer){
         SQLiteDatabase db = getReadableDatabase();
@@ -278,6 +292,7 @@ public class OpenHelper extends SQLiteOpenHelper {
             do{
                 int id = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_PERSON_ID));
                 String pass = cur.getString(cur.getColumnIndexOrThrow(COLUMN_PASSWORD));
+                byte[] photo = cur.getBlob(cur.getColumnIndexOrThrow(COLUMN_PHOTOPERSON));
                 int age = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_AGE));
                 String telephone = cur.getString(cur.getColumnIndexOrThrow(COLUMN_TELEPHONE));
                 String email = cur.getString(cur.getColumnIndexOrThrow(COLUMN_EMAIL));
@@ -287,11 +302,12 @@ public class OpenHelper extends SQLiteOpenHelper {
 
                 if(id == idPer) {
                     String data = telephone == null ? email : telephone;
-                    return new Person(id, data, name, age, dateOfBirth, city, pass);
+                    return new Person(id, data, name,BitmapFactory.decodeByteArray(
+                            photo, 0 ,photo.length), age, dateOfBirth, city, pass);
                 }
             }while (cur.moveToNext());
         }
-        return new Person(100, null, null, 0, null, null, null);
+        return new Person(100, null, null, null, 0, null, null, null);
     }
 
     public Organization findOrgByName(String nameOrg){
@@ -392,7 +408,6 @@ public class OpenHelper extends SQLiteOpenHelper {
         return res;
     }
     public int findPersonIdByChatId(int chatId){
-        ArrayList<Message> res = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_CHAT_NAME,
                 null,
@@ -440,8 +455,9 @@ public class OpenHelper extends SQLiteOpenHelper {
         }while (cursor.moveToNext());
         return arr_msgValue;
     }
-    public ArrayList<Integer> findLastChatId(){
+    public ArrayList<Integer> findLastChatIdByLogin(String log){
         ArrayList<Integer> arr_chat_id = new ArrayList<>();
+        int perId = findPersonByLogin(log).getId();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_MSG_NAME,
                 null,
@@ -452,13 +468,15 @@ public class OpenHelper extends SQLiteOpenHelper {
                 null);
         cursor.moveToFirst();
         do {
-            Integer chatId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MSG_CHAT_ID));
-            if(arr_chat_id.contains((Object) chatId)){
-                arr_chat_id.remove((Object) chatId);
-                arr_chat_id.add(chatId);
-            }
-            else{
-                arr_chat_id.add(chatId);
+            int chatId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MSG_CHAT_ID));
+            int id = findPersonIdByChatId(chatId);
+            if(id == perId) {
+                if (arr_chat_id.contains((Object) chatId)) {
+                    arr_chat_id.remove((Object) chatId);
+                    arr_chat_id.add(chatId);
+                } else {
+                    arr_chat_id.add(chatId);
+                }
             }
         }while (cursor.moveToNext());
         return arr_chat_id;
@@ -523,12 +541,14 @@ public class OpenHelper extends SQLiteOpenHelper {
             int columnCityIndex = cursor.getColumnIndex(COLUMN_CITY);
             int columnPasswordIndex = cursor.getColumnIndex(COLUMN_PASSWORD);
             int columnFavIndex = cursor.getColumnIndex(COLUMN_FAV_ORG);
+            int columnPerPhoto = cursor.getColumnIndexOrThrow(COLUMN_PHOTOPERSON);
 
             ArrayList<String> arr_fav_org = new ArrayList<>();
             do {
                 int id = cursor.getInt(columnIdIndex);
                 String name = cursor.getString(columnNameIndex);
                 int age = cursor.getInt(columnAgeIndex);
+                byte[] photo = cursor.getBlob(columnPerPhoto);
                 String telephone = cursor.getString(columnTelephoneIndex);
                 String email = cursor.getString(columnEmailIndex);
                 String dateOfBirth = cursor.getString(columnDateOfBirthIndex);
@@ -537,7 +557,8 @@ public class OpenHelper extends SQLiteOpenHelper {
                 String favOrg = cursor.getString(columnFavIndex);
                 arr_fav_org.add(favOrg);
                 String data = telephone == null ? email : telephone;
-                people.add(new Person(id, data, name, age, dateOfBirth, city, password));
+                people.add(new Person(id, data, name,BitmapFactory.decodeByteArray(
+                        photo, 0 ,photo.length), age, dateOfBirth, city, password));
             }while (cursor.moveToNext());
         } catch (Exception e){
             Log.e("MY_LOG", e.getMessage());
@@ -602,7 +623,7 @@ public class OpenHelper extends SQLiteOpenHelper {
         }while (cursor.moveToNext());
         return arrChat;
     }
-    public ArrayList<Integer> findAllChatId(){
+    public ArrayList<Integer> findAllChatIdByLog(String log){
         ArrayList<Integer> arrChat = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_MSG_NAME,
@@ -615,7 +636,9 @@ public class OpenHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
         do {
             int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MSG_CHAT_ID));
-            arrChat.add(id);
+            String login = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
+
+            if(login.equals(log)) arrChat.add(id);
         }while (cursor.moveToNext());
         return arrChat;
     }

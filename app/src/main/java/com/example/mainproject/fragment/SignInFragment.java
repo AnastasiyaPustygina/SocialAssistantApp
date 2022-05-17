@@ -1,7 +1,5 @@
 package com.example.mainproject.fragment;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +15,6 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.R;
-import com.example.mainproject.model.Message;
-import com.example.mainproject.model.Organization;
 
 public class SignInFragment extends Fragment {
     private EditText ed_data;

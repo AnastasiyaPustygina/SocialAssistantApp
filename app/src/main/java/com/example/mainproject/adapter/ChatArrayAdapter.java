@@ -1,31 +1,19 @@
 package com.example.mainproject.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.database.CursorIndexOutOfBoundsException;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.R;
 import com.example.mainproject.fragment.ChatFragment;
-import com.example.mainproject.fragment.ListOfChatsFragment;
-import com.example.mainproject.model.Chat;
-import com.example.mainproject.model.Message;
-import com.example.mainproject.model.Organization;
+import com.example.mainproject.domain.Message;
 
 import java.util.ArrayList;
 
