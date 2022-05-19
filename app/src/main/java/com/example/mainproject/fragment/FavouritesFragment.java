@@ -1,5 +1,6 @@
 package com.example.mainproject.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.example.mainproject.OpenHelper;
 import com.example.mainproject.adapter.OrgArrayAdapter;
 import com.example.mainproject.R;
 import com.example.mainproject.domain.Organization;
+import com.example.mainproject.rest.AppApiVolley;
 
 import java.util.ArrayList;
 
@@ -30,7 +32,6 @@ public class FavouritesFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
         bt_prof = getActivity().findViewById(R.id.bt_fav_prof);
         bt_list = getActivity().findViewById(R.id.bt_fav_list);
         ArrayList<Organization> arListOrg = new ArrayList<Organization>();
@@ -40,11 +41,10 @@ public class FavouritesFragment extends Fragment {
             if(openHelper.findOrgByName(arr[i]).getName() != null)
                 arListOrg.add(openHelper.findOrgByName(arr[i]));
         }
-                RecyclerView recyclerView = getActivity().findViewById(R.id.rec_fav);
+        RecyclerView recyclerView = getActivity().findViewById(R.id.rec_fav);
         OrgArrayAdapter orgArrayAdapter = new OrgArrayAdapter(
                 getContext(), arListOrg, getArguments().getString("LOG"), this);
         recyclerView.setAdapter(orgArrayAdapter);
-
         Bundle bundleLog = new Bundle();
         bundleLog.putString("LOG", getArguments().getString("LOG"));
         bt_prof.setOnClickListener(new View.OnClickListener() {

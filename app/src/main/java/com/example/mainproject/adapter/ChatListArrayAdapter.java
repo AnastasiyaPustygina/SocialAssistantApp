@@ -17,8 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.R;
+import com.example.mainproject.domain.Chat;
 import com.example.mainproject.fragment.ListOfChatsFragment;
 import com.example.mainproject.domain.Organization;
+import com.example.mainproject.rest.AppApiVolley;
 
 import java.util.ArrayList;
 
@@ -62,7 +64,8 @@ public class ChatListArrayAdapter extends RecyclerView.Adapter<ChatListArrayAdap
                             (arrayListLastOrg.size() - position - 1).getPhotoOrg(), 0,
                     arrayListLastOrg.get(arrayListLastOrg.size() - position - 1).getPhotoOrg().length));
             holder.lastMsg.setText(arrListLastMsg.get(arrListLastMsg.size() - position - 1));
-            holder.tvNameOrg.setText(arrayListLastOrg.get(arrayListLastOrg.size() - position - 1).getName());
+            Organization organization = arrayListLastOrg.get(arrayListLastOrg.size() - position - 1);
+            holder.tvNameOrg.setText(organization.getName());
             Bundle bundle = new Bundle();
             bundle.putString("LOG", name);
 
@@ -70,6 +73,9 @@ public class ChatListArrayAdapter extends RecyclerView.Adapter<ChatListArrayAdap
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    new AppApiVolley(context).addChat(new Chat(
+                            openHelper.findPersonByLogin(name),
+                            organization));
                     holder.itemView.setOnClickListener((view1) -> {
                         NavHostFragment.
                                 findNavController(fragment).navigate(

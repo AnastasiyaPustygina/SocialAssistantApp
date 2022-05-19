@@ -3,10 +3,12 @@ package com.example.mainproject;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -16,8 +18,14 @@ import com.example.mainproject.domain.Message;
 import com.example.mainproject.domain.Organization;
 import com.example.mainproject.domain.Person;
 
+import java.io.File;
+
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -53,14 +61,10 @@ public class OpenHelper extends SQLiteOpenHelper {
     public static final String COLUMN_MSG_ID = "idMsg";
     public static final String COLUMN_MSG_VALUE = "msgValue";
     public static final String COLUMN_MSG_TIME = "msgTime";
-
-
-
-
-
-
     public static final int VERSION = 1;
-
+    private Context context;
+    private static final String APP_PREFERENCES = "my_pref";
+    private SharedPreferences sharedPreferences;
 
 
 
@@ -68,46 +72,65 @@ public class OpenHelper extends SQLiteOpenHelper {
                       @Nullable String name,
                       @Nullable SQLiteDatabase.CursorFactory factory,
                       int version) {
+
         super(context, name, factory, version);
+        this.context = context;
+        assert context != null;
+        sharedPreferences = context.getSharedPreferences
+                (APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+
+        sharedPreferences = context.getSharedPreferences
+                (APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("per_id", 1);
+        editor.putInt("org_id", 1);
+        editor.putInt("chat_id", 1);
+        editor.putInt("msg_id", 1);
+        editor.commit();
+
+
         String query = "CREATE TABLE " + TABLE_PERSON_NAME + "(" +
-                COLUMN_PERSON_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_NAME + " TEXT, " +
-                COLUMN_PHOTOPERSON + " BLOB, "
-                + COLUMN_AGE + " INTEGER, " +
-                COLUMN_TELEPHONE + " TEXT, "
-                + COLUMN_EMAIL + " TEXT, "
-                + COLUMN_DATE_OF_BIRTH + " TEXT, "
-                + COLUMN_FAV_ORG + " TEXT, "
-                + COLUMN_PASSWORD + " TEXT, "
-                + COLUMN_CITY + " TEXT);";
+                        COLUMN_PERSON_ID + " INTEGER, " +
+                        COLUMN_NAME + " TEXT, " +
+                        COLUMN_PHOTOPERSON + " BLOB, "
+                        + COLUMN_AGE + " INTEGER, " +
+                        COLUMN_TELEPHONE + " TEXT, "
+                        + COLUMN_EMAIL + " TEXT, "
+                        + COLUMN_DATE_OF_BIRTH + " TEXT, "
+                        + COLUMN_FAV_ORG + " TEXT, "
+                        + COLUMN_PASSWORD + " TEXT, "
+                        + COLUMN_CITY + " TEXT);";
         sqLiteDatabase.execSQL(query);
-        query = "CREATE TABLE " + TABLE_ORG_NAME + "(" +
-                COLUMN_ORGANIZATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_ORGNAME + " TEXT, " +
-                COLUMN_TYPE + " TEXT, " +
-                COLUMN_PHOTOORG + " BLOB, "
-                + COLUMN_DESCRIPTION + " TEXT, "
-                + COLUMN_ADDRESS + " TEXT, "
-                + COLUMN_NEEDS + " TEXT, "
-                + COLUMN_LINKWEB + " TEXT);";
+
+            query = "CREATE TABLE " + TABLE_ORG_NAME + "(" +
+                    COLUMN_ORGANIZATION_ID + " INTEGER, " +
+                    COLUMN_ORGNAME + " TEXT, " +
+                    COLUMN_TYPE + " TEXT, " +
+                    COLUMN_PHOTOORG + " BLOB, "
+                    + COLUMN_DESCRIPTION + " TEXT, "
+                    + COLUMN_ADDRESS + " TEXT, "
+                    + COLUMN_NEEDS + " TEXT, "
+                    + COLUMN_LINKWEB + " TEXT);";
+                sqLiteDatabase.execSQL(query);
+            query = "CREATE TABLE " + TABLE_CHAT_NAME + "(" +
+                    COLUMN_CHAT_ID + " INTEGER, " +
+                    COLUMN_ORGANIZATION_CHAT_ID + " INTEGER, " +
+                    COLUMN_PERSON_CHAT_ID + " INTEGER);";
         sqLiteDatabase.execSQL(query);
-        query = "CREATE TABLE " + TABLE_CHAT_NAME + "(" +
-                COLUMN_ORGANIZATION_CHAT_ID + " INTEGER, " +
-                COLUMN_PERSON_CHAT_ID + " INTEGER, "
-                + COLUMN_CHAT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT);";
-        sqLiteDatabase.execSQL(query);
-        query = "CREATE TABLE " + TABLE_MSG_NAME + "(" +
-                COLUMN_MSG_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_MSG_WHOSE + " TEXT, " +
-                COLUMN_MSG_CHAT_ID + " INTEGER, " +
-                COLUMN_MSG_VALUE + " TEXT, "
-                + COLUMN_MSG_TIME + " TEXT);";
+
+            query = "CREATE TABLE " + TABLE_MSG_NAME + "(" +
+                    COLUMN_MSG_ID + " INTEGER, " +
+                    COLUMN_MSG_WHOSE + " TEXT, " +
+                    COLUMN_MSG_CHAT_ID + " INTEGER, " +
+                    COLUMN_MSG_VALUE + " TEXT, "
+                    + COLUMN_MSG_TIME + " TEXT);";
         sqLiteDatabase.execSQL(query);
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -117,7 +140,12 @@ public class OpenHelper extends SQLiteOpenHelper {
 
 
     public long insert(Person person) {
+        int idPer = sharedPreferences.getInt("per_id", 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("per_id", idPer + 1);
+        editor.commit();
         ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_PERSON_ID, idPer);
         contentValues.put(COLUMN_NAME, person.getName());
         contentValues.put(COLUMN_PHOTOPERSON, person.getPhotoPer());
         contentValues.put(COLUMN_FAV_ORG, "");
@@ -127,11 +155,17 @@ public class OpenHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_DATE_OF_BIRTH, person.getDateOfBirth());
         contentValues.put(COLUMN_PASSWORD, person.getPassword());
         contentValues.put(COLUMN_AGE, person.getAge());
+        contentValues.put(COLUMN_FAV_ORG, "");
         SQLiteDatabase db = getWritableDatabase();
         return db.insert(TABLE_PERSON_NAME, null, contentValues);
     }
     public long insertOrg(Organization org) {
+        int idOrg = sharedPreferences.getInt("org_id", 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("org_id", idOrg + 1);
+        editor.commit();
         ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_ORGANIZATION_ID, idOrg);
         contentValues.put(COLUMN_ORGNAME, org.getName());
         contentValues.put(COLUMN_TYPE, org.getType());
         contentValues.put(COLUMN_PHOTOORG, org.getPhotoOrg());
@@ -143,14 +177,27 @@ public class OpenHelper extends SQLiteOpenHelper {
         return db.insert(TABLE_ORG_NAME, null, contentValues);
     }
     public long insertChat(Chat chat){
+
+        Log.e("INSERT CHAT", chat.toString());
+        int idChat = sharedPreferences.getInt("chat_id", 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("chat_id", idChat + 1);
+        editor.commit();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_PERSON_CHAT_ID, chat.getChat_personId());
-        contentValues.put(COLUMN_ORGANIZATION_CHAT_ID, chat.getChat_orgId());
+        contentValues.put(COLUMN_CHAT_ID, idChat);
+
+        contentValues.put(COLUMN_PERSON_CHAT_ID, chat.getPerson().getId());
+        contentValues.put(COLUMN_ORGANIZATION_CHAT_ID, chat.getOrganization().getId());
         SQLiteDatabase db = getWritableDatabase();
         return db.insert(TABLE_CHAT_NAME, null, contentValues);
     }
     public long insertMsg(Message msg) {
+        int idMsg = sharedPreferences.getInt("msg_id", 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("msg_id", idMsg + 1);
+        editor.commit();
         ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_MSG_ID, idMsg);
         contentValues.put(COLUMN_MSG_WHOSE, msg.getWhose());
         contentValues.put(COLUMN_MSG_CHAT_ID, msg.getChat_id());
         contentValues.put(COLUMN_MSG_VALUE, msg.getValues());
@@ -160,18 +207,49 @@ public class OpenHelper extends SQLiteOpenHelper {
     }
 
     public void deleteAllPeople() {
+        Log.e("DELETE TABLE" , "PERSON");
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("per_id");
+        editor.putInt("per_id", 1);
+        editor.commit();
         SQLiteDatabase mDataBase = getWritableDatabase();
         mDataBase.delete(TABLE_PERSON_NAME, null, null);
     }
+    public void deleteMsgByChatId(int id_chat){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        int prevIdMsg = sharedPreferences.getInt("msg_id", 0);
+        editor.remove("msg_id");
+        editor.putInt("msg_id", prevIdMsg - findMsgByChatId(id_chat).size());
+        editor.commit();
+        SQLiteDatabase mDataBase = getWritableDatabase();
+        mDataBase.execSQL("DELETE FROM " + TABLE_MSG_NAME + " WHERE " + COLUMN_MSG_CHAT_ID
+                + " = " + id_chat + ";");
+
+    }
     public void deleteAllOrganization() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("org_id");
+        editor.putInt("org_id", 1);
+        editor.commit();
+        Log.e("DELETE TABLE" , "ORGANIZATION");
         SQLiteDatabase mDataBase = getWritableDatabase();
         mDataBase.delete(TABLE_ORG_NAME, null, null);
     }
     public void deleteAllChat() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("chat_id");
+        editor.putInt("chat_id", 1);
+        editor.commit();
+        Log.e("DELETE TABLE" , "CHAT");
         SQLiteDatabase mDataBase = getWritableDatabase();
         mDataBase.delete(TABLE_CHAT_NAME, null, null);
     }
     public void deleteAllMessage() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("msg_id");
+        editor.putInt("msg_id", 1);
+        editor.commit();
+        Log.e("DELETE TABLE" , "MESSAGE");
         SQLiteDatabase mDataBase = getWritableDatabase();
         mDataBase.delete(TABLE_MSG_NAME, null, null);
     }
@@ -190,6 +268,26 @@ public class OpenHelper extends SQLiteOpenHelper {
         }
         return "";
     }
+    public Chat findChatByPersonIdAndOrgId(int perId, int orgId){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_CHAT_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+        cursor.moveToFirst();
+        do {
+            int idPer = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PERSON_CHAT_ID));
+            int chat_id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CHAT_ID));
+            int org_id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ORGANIZATION_CHAT_ID));
+
+            if(idPer == perId && org_id == orgId)
+                return new Chat(chat_id, findPersonById(idPer), findOrgById(org_id));
+        }while (cursor.moveToNext());
+        return new Chat(null, null);
+    }
     public String findFavOrgByLogin(String log){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cur = db.query(TABLE_PERSON_NAME, null, null,
@@ -202,7 +300,7 @@ public class OpenHelper extends SQLiteOpenHelper {
                 if(name.equals(log)) return fav;
             }while (cur.moveToNext());
         }
-        return "";
+        return " ";
     }
     public void changeDescByLog(String name, String description){
         SQLiteDatabase db = getReadableDatabase();
@@ -232,22 +330,22 @@ public class OpenHelper extends SQLiteOpenHelper {
                 if (name.equals(log)) requiredData = fav;
             } while (cur.moveToNext());
         }
-        List<String> ar = Arrays.asList(findFavOrgByLogin(log).split(" "));
+        List<String> ar = Arrays.asList(findFavOrgByLogin(log).split("    "));
         if(!ar.contains(nameOfOrg)) {
-            String res = requiredData + " " + nameOfOrg;
+            String res = requiredData + "    " + nameOfOrg;
             String query = "UPDATE " + TABLE_PERSON_NAME + " SET " +
                     COLUMN_FAV_ORG + " = " + "'" + res + "'" + " WHERE "
                     + COLUMN_NAME + " = '" + log + "';";
             db.execSQL(query);
         }
         else{
-            String[] str = findFavOrgByLogin(log).split(" ");
+            String[] str = findFavOrgByLogin(log).split("    ");
             for (int i = 0; i < str.length; i++) {
                 if(str[i].equals(nameOfOrg)) str[i] = "";
             }
             StringBuilder res = new StringBuilder();
             for (int i = 0; i < str.length; i++) {
-                res.append(str[i] + " ");
+                res.append(str[i] + "    ");
             }
             String query = "UPDATE " + TABLE_PERSON_NAME + " SET " +
                     COLUMN_FAV_ORG + " = " + "'" + res + "'" + " WHERE "
@@ -273,7 +371,7 @@ public class OpenHelper extends SQLiteOpenHelper {
                 String dateOfBirth = cur.getString(cur.getColumnIndexOrThrow(COLUMN_DATE_OF_BIRTH));
                 String city = cur.getString(cur.getColumnIndexOrThrow(COLUMN_CITY));
                 String name = cur.getString(cur.getColumnIndexOrThrow(COLUMN_NAME));
-
+                String fav = cur.getString(cur.getColumnIndexOrThrow(COLUMN_FAV_ORG));
                 if(name.equals(log)) {
                     String data = telephone == null ? email : telephone;
                     return new Person(id, data, name, BitmapFactory.decodeByteArray(
@@ -281,7 +379,7 @@ public class OpenHelper extends SQLiteOpenHelper {
                 }
             }while (cur.moveToNext());
         }
-        return new Person(null, null, null, 0, null, null, null);
+        return new Person(null, null, null, 0,  null, null, null);
     }
     public Person findPersonById(int idPer){
         SQLiteDatabase db = getReadableDatabase();
@@ -299,7 +397,6 @@ public class OpenHelper extends SQLiteOpenHelper {
                 String dateOfBirth = cur.getString(cur.getColumnIndexOrThrow(COLUMN_DATE_OF_BIRTH));
                 String city = cur.getString(cur.getColumnIndexOrThrow(COLUMN_CITY));
                 String name = cur.getString(cur.getColumnIndexOrThrow(COLUMN_NAME));
-
                 if(id == idPer) {
                     String data = telephone == null ? email : telephone;
                     return new Person(id, data, name,BitmapFactory.decodeByteArray(
@@ -386,6 +483,28 @@ public class OpenHelper extends SQLiteOpenHelper {
         return new Organization(1000, null, null,null,
                 null, null, null, null);
     }
+
+    public Chat findChatById(int chat_id){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cur = db.query(TABLE_CHAT_NAME, null, null,
+                null, null, null, null);
+        cur.moveToFirst();
+        if(!cur.isAfterLast()){
+            do{
+                int id = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_CHAT_ID));
+                Person person = findPersonById(
+                        cur.getInt(cur.getColumnIndexOrThrow(COLUMN_PERSON_CHAT_ID)));
+                Organization organization = findOrgById(
+                        cur.getInt(cur.getColumnIndexOrThrow(COLUMN_ORGANIZATION_CHAT_ID)));
+
+                if(id == chat_id) {
+                    return new Chat(id, person, organization);
+                }
+            }while (cur.moveToNext());
+        }
+        return new Chat(null, null);
+    }
+
     public ArrayList<Message> findMsgByChatId(int chatId){
         ArrayList<Message> res = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -423,6 +542,7 @@ public class OpenHelper extends SQLiteOpenHelper {
 
             if(chatId == id) return idPer;
         }while (cursor.moveToNext());
+        Log.e("OP 544", chatId + "");
         return 100;
     }
     public ArrayList<String> findLastMsgValuesByPerName(String name){
@@ -501,6 +621,7 @@ public class OpenHelper extends SQLiteOpenHelper {
     }
     public int findChatIdByOrgIdAndPerId(int orgId, int perId){
         SQLiteDatabase db = getReadableDatabase();
+        Log.e("FIND_CHAT_ID", findAllChats().toString());
         Cursor cursor = db.query(TABLE_CHAT_NAME,
                 null,
                 null,
@@ -518,7 +639,31 @@ public class OpenHelper extends SQLiteOpenHelper {
         return 100;
     }
 
-
+    public Message findLastMessageByChatId(int chat_id){
+        SQLiteDatabase db = getReadableDatabase();
+        Message message = null;
+        Cursor cursor = db.query(TABLE_MSG_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+        cursor.moveToFirst();
+        do {
+            String msg = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MSG_VALUE));
+            int chatId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MSG_CHAT_ID));
+            String whose = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MSG_WHOSE));
+            String time = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MSG_TIME));
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MSG_ID));
+            if(chatId == chat_id){
+                message = new Message(id, whose, chat_id,
+                        msg, time);
+                Log.e(" MSG ", message.toString());
+            }
+        }while (cursor.moveToNext());
+        return message;
+    }
 
     public List<Person> findAllPeople() {
         List<Person> people = new ArrayList<>();
@@ -619,14 +764,15 @@ public class OpenHelper extends SQLiteOpenHelper {
             int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CHAT_ID));
             int currentPersonId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PERSON_CHAT_ID));
             int currentOrgId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ORGANIZATION_CHAT_ID));
-            arrChat.add(new Chat(id, currentPersonId, currentOrgId));
+
+            arrChat.add(new Chat(id, findPersonById(currentPersonId), findOrgById(currentOrgId)));
         }while (cursor.moveToNext());
         return arrChat;
     }
     public ArrayList<Integer> findAllChatIdByLog(String log){
         ArrayList<Integer> arrChat = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(TABLE_MSG_NAME,
+        Cursor cursor = db.query(TABLE_CHAT_NAME,
                 null,
                 null,
                 null,
@@ -636,14 +782,15 @@ public class OpenHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
         do {
             int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MSG_CHAT_ID));
-            String login = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
+            String login = findPersonById(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PERSON_CHAT_ID))).getName();
 
             if(login.equals(log)) arrChat.add(id);
         }while (cursor.moveToNext());
         return arrChat;
     }
-    public ArrayList<String> findAllMsgVal(){
-        ArrayList<String> arrMsgVal = new ArrayList<>();
+    public ArrayList<Message> findAllMsg(){
+        ArrayList<Message> arrMsg = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_MSG_NAME,
                 null,
@@ -654,9 +801,14 @@ public class OpenHelper extends SQLiteOpenHelper {
                 null);
         cursor.moveToFirst();
         do {
-            String curMsg = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MSG_VALUE));
-            arrMsgVal.add(curMsg);
+            String msg = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MSG_VALUE));
+            int chatId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MSG_CHAT_ID));
+            String whose = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MSG_WHOSE));
+            String time = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MSG_TIME));
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MSG_ID));
+            Message message = new Message(id, whose, chatId ,msg, time);
+            arrMsg.add(message);
         }while (cursor.moveToNext());
-        return arrMsgVal;
+        return arrMsg;
     }
 }

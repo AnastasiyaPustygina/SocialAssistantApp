@@ -27,6 +27,8 @@ import com.example.mainproject.fragment.MapFragment;
 import com.example.mainproject.domain.Chat;
 import com.example.mainproject.domain.Organization;
 import com.example.mainproject.domain.Person;
+import com.example.mainproject.rest.AppApi;
+import com.example.mainproject.rest.AppApiVolley;
 
 import java.util.List;
 
@@ -62,9 +64,15 @@ public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHo
         Organization organization = arrayOrg.get(position);
         OpenHelper openHelper1 = new OpenHelper(context, "OpenHelder", null, OpenHelper.VERSION);
         Person person = openHelper1.findPersonByLogin(nameOfPerson);
-        if(openHelper1.findFavOrgByLogin(nameOfPerson).contains(organization.getName()))
-            holder.btIdenFav.setBackgroundResource(R.drawable.bt_fav_true);
-        else holder.btIdenFav.setBackgroundResource(R.drawable.bt_fav_false);
+        try {
+            if (openHelper1.findFavOrgByLogin(nameOfPerson).contains(organization.getName()))
+                holder.btIdenFav.setBackgroundResource(R.drawable.bt_fav_true);
+            else holder.btIdenFav.setBackgroundResource(R.drawable.bt_fav_false);
+        }catch (Exception e){
+            Log.e("findFavOrgByLogin", openHelper1.findFavOrgByLogin(nameOfPerson));
+            Log.e("organization.getName()", organization.toString());
+
+        }
 
 
         holder.nameOrg.setText(organization.getName());
@@ -119,13 +127,23 @@ public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHo
             @Override
             public void onClick(View view) {
                 Chat chat = new Chat(
-                        openHelper1.findPersonByLogin(nameOfPerson).getId(), organization.getId());
+                        person, organization);
                 try{
-                    if (!openHelper1.findAllChats().contains(chat)) openHelper1.insertChat(chat);
-
-
+                    if (!(openHelper1.findChatIdByOrgIdAndPerId(
+                            organization.getId(), person.getId()) == 0)) {
+                        chat = new Chat(
+                                openHelper1.findPersonByLogin(nameOfPerson), organization);
+                        Log.e("CHAT BEFORE INSERT", chat.toString());
+                        openHelper1.insertChat(chat);
+                        Log.e("CHAT AFTER INSERT", openHelper1.findChatByPersonIdAndOrgId(
+                                openHelper1.findPersonByLogin(nameOfPerson).getId(), organization.getId()).toString());
+                        new AppApiVolley(context).addChat(openHelper1.findChatByPersonIdAndOrgId(
+                                openHelper1.findPersonByLogin(nameOfPerson).getId(), organization.getId()));
+                    }
                 }catch (CursorIndexOutOfBoundsException e){
-                    openHelper1.insertChat(chat); }
+                    openHelper1.insertChat(chat);
+                    new AppApiVolley(context).addChat(openHelper1.findChatByPersonIdAndOrgId(
+                            openHelper1.findPersonByLogin(nameOfPerson).getId(), organization.getId()));}
                 Bundle bundleNameOfOrg = new Bundle();
                 bundleNameOfOrg.putString("NameOrg", holder.nameOrg.getText().toString());
                 bundleNameOfOrg.putString("LOG", nameOfPerson);

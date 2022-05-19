@@ -98,7 +98,8 @@ public class Person {
     @Override
     public String toString() {
         return "Person{" +
-                "telephone='" + telephone + '\'' +
+                "id=" + id +
+                ", telephone='" + telephone + '\'' +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", age=" + age +

@@ -1,5 +1,6 @@
 package com.example.mainproject.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,12 +18,15 @@ import com.example.mainproject.OpenHelper;
 import com.example.mainproject.adapter.OrgArrayAdapter;
 import com.example.mainproject.R;
 import com.example.mainproject.domain.Organization;
+import com.example.mainproject.rest.AppApiVolley;
 
 import java.util.ArrayList;
 
 public class ListFragment extends Fragment {
     private AppCompatButton bt_prof, bt_fav;
     private OrgArrayAdapter orgArrayAdapter;
+    private RecyclerView recyclerView;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -36,7 +40,7 @@ public class ListFragment extends Fragment {
         bt_fav = getActivity().findViewById(R.id.bt_list_fav);
         OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
         ArrayList<Organization> arListOrg = openHelper.findAllOrganizations();
-        RecyclerView recyclerView = getActivity().findViewById(R.id.rec_list);
+        recyclerView = getActivity().findViewById(R.id.rec_list);
         orgArrayAdapter =
                 new OrgArrayAdapter(getContext(), arListOrg, getArguments().getString("LOG"),
                         this);
@@ -92,8 +96,4 @@ public class ListFragment extends Fragment {
         });
 
     }
-    public void updateAdapter(){
-        try {
-            orgArrayAdapter.notifyDataSetChanged();
-        }catch (Exception ignored){};}
 }

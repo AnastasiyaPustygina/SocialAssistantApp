@@ -2,9 +2,11 @@ package com.example.mainproject.fragment;
 
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.BitmapFactory;
+import android.graphics.LightingColorFilter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import com.example.mainproject.R;
 import com.example.mainproject.adapter.ChatArrayAdapter;
 import com.example.mainproject.domain.Message;
 import com.example.mainproject.domain.Organization;
+import com.example.mainproject.rest.AppApiVolley;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -113,6 +116,11 @@ public class ChatFragment extends Fragment {
                                 openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId), et_msg.getText().toString(),
                                 curTime);
                         openHelper.insertMsg(myMsg);
+                        new AppApiVolley(getContext()).addMessage(
+                                openHelper.findLastMessageByChatId(
+                                        openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId)));
+                        Log.e("CHAT MESSAGE" , openHelper.findMsgByChatId(
+                                openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId)).toString());
                         ChatArrayAdapter recyclerAdapter1 = new ChatArrayAdapter(getContext(),
                                 ChatFragment.this, openHelper.
                                 findChatIdByOrgIdAndPerId(org.getId(), perId));

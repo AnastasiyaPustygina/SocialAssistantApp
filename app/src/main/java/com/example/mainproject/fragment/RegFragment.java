@@ -21,6 +21,8 @@ import com.example.mainproject.R;
 import com.example.mainproject.domain.Person;
 import com.example.mainproject.rest.AppApiVolley;
 
+import java.util.ArrayList;
+
 public class RegFragment extends Fragment {
 
     private String data;
@@ -108,11 +110,8 @@ public class RegFragment extends Fragment {
                     age = Integer.parseInt(edAge.getText().toString());
                 } catch (Exception e) {
                 }
-                if (edData.getText().
-                        toString().contains("@")) data = edTelOrEmail.getText().
-                        toString();
-                else data = edTelOrEmail.getText().
-                        toString();
+                 data = edTelOrEmail.getText().toString();
+
                 dateOfBirth = edBateOfBirth.getText().toString();
                 city = edCity.getText().toString();
                 password1 = edPass1.getText().toString();
@@ -129,14 +128,15 @@ public class RegFragment extends Fragment {
                     if (!password1.equals(password2)) {
                         checking.setText("Пароли не совпадают");
                     } else {
-                        OpenHelper openHelper = new OpenHelper(getContext(),
-                                "OpenHelder",
-                                null, OpenHelper.VERSION
-                        );
+
                         Bitmap bitmap = BitmapFactory.decodeResource(
                                 getResources(), R.drawable.image_for_checking);
+                        OpenHelper openHelper = new OpenHelper(
+                                getContext(), "OpenHelder", null, OpenHelper.VERSION);
+                        openHelper.insert(new Person(data, name, bitmap, age, dateOfBirth, city, password1));
                         new AppApiVolley(getContext()).addPerson
-                                (new Person(data, name, bitmap, age, dateOfBirth, city, password1));
+                                (openHelper.findPersonByLogin(name));
+
                         bt_reg_fr_reg.setOnClickListener((view1) -> {
                             NavHostFragment.
                                     findNavController(RegFragment.this).navigate(

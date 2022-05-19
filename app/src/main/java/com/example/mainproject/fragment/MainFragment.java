@@ -1,5 +1,6 @@
 package com.example.mainproject.fragment;
 
+import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.R;
 import com.example.mainproject.domain.Person;
+import com.example.mainproject.rest.AppApiVolley;
 
 public class MainFragment extends Fragment {
 
@@ -119,3 +121,5 @@ public class MainFragment extends Fragment {
 
     }
 }
+
+
