@@ -1,5 +1,7 @@
 package com.example.mainproject.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +23,8 @@ public class SignInFragment extends Fragment {
     private EditText ed_data;
     private EditText ed_pass;
     private AppCompatButton btSignIn, btReg;
+    public static final String APP_PREFERENCES = "my_pref";
+    public static SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -32,6 +36,8 @@ public class SignInFragment extends Fragment {
    @Override
     public void onStart() {
         super.onStart();
+       sharedPreferences = getContext().getSharedPreferences
+               (APP_PREFERENCES, Context.MODE_PRIVATE);
        OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
        try {
            Log.e("PEOPLE", openHelper.findAllPeople().toString());

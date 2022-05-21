@@ -1,6 +1,7 @@
 package com.example.mainproject.rest;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,6 +31,7 @@ import com.example.mainproject.domain.mapper.ChatMapper;
 import com.example.mainproject.domain.mapper.MessageMapper;
 import com.example.mainproject.domain.mapper.OrganizationMapper;
 import com.example.mainproject.fragment.ListFragment;
+import com.example.mainproject.fragment.MainFragment;
 import com.google.protobuf.Api;
 
 import org.json.JSONArray;
@@ -127,13 +129,14 @@ public class AppApiVolley implements  AppApi {
             params.put("telephone", person.getTelephone());
             params.put("email", person.getEmail());
             params.put("city", person.getCity());
-
+            SharedPreferences sharedPreferences = MainFragment.sharedPreferences;
+            String photo = sharedPreferences.getString("per_photo" + person.getName(), "notPerPhotoInPref");
             StringBuilder stringBuilder = new StringBuilder();
             Bitmap bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(
                     person.getPhotoPer(), 0, person.getPhotoPer().length),
                     150, 150, false);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            Bitmap.CompressFormat imFor = Bitmap.CompressFormat.PNG;
+            Bitmap.CompressFormat imFor = Bitmap.CompressFormat.JPEG;
             bitmap.compress(imFor, 0, stream);
 
             for (int i = 0; i < stream.toByteArray().length - 1; i++) {
@@ -162,6 +165,60 @@ public class AppApiVolley implements  AppApi {
     }
 
     @Override
+    public void updatePerson(int id, String telephone, String email, String name, byte[] photoPer,
+                                   int age, String dateOfBirth, String city) {
+        String url = BASE_URL + "/person/" + id;
+        Log.e("UPDATE_PER", id + " " + name + " " + telephone + " "
+                + email + " " + age + " " + dateOfBirth + " " + city);
+        RequestQueue referenceQueue = Volley.newRequestQueue(context);
+        StringRequest stringRequest = new StringRequest(Request.Method.PUT,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        OpenHelper openHelper = new OpenHelper(
+                                context, "OpenHelder", null, OpenHelper.VERSION);
+                        Log.e("UPDATE_PER_PHOTO", Arrays.toString(photoPer));
+                        SharedPreferences sharedPreferences = MainFragment.sharedPreferences;
+                        String photo = sharedPreferences.getString("per_photo" + name,
+                                "notPerPhotoInPref");
+
+
+                        Log.e("AFTER_UPDATE_PER_PHOTO", photo);
+                    }
+                },
+                errorListener){
+            @Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("name", name);
+                if(telephone != null) {
+                    params.put("telephone", telephone);
+                    params.put("email", "");
+                }
+                else{
+                    params.put("telephone", "");
+                    params.put("email", email);
+                }
+                params.put("city", city);
+                SharedPreferences sharedPreferences = MainFragment.sharedPreferences;
+                String photo = sharedPreferences.getString("per_photo" + name, "notPerPhotoInPref");
+                params.put("photo", photo);
+                params.put("date_of_birth", dateOfBirth);
+                params.put("age", age + "");
+                return params;
+            }
+        };
+        referenceQueue.add(stringRequest);
+
+
+
+    }
+
+
+
+    @Override
     public void addChat(Chat chat) {
         String url = BASE_URL + "/chat";
         RequestQueue referenceQueue = Volley.newRequestQueue(context);
@@ -183,7 +240,7 @@ public class AppApiVolley implements  AppApi {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(chat.getPerson().getPhotoPer(),
                         0, chat.getPerson().getPhotoPer().length);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                Bitmap.CompressFormat imFor = Bitmap.CompressFormat.PNG;
+                Bitmap.CompressFormat imFor = Bitmap.CompressFormat.JPEG;
                 bitmap.compress(imFor, 0, stream);
 
                 for (int i = 0; i < stream.toByteArray().length - 1; i++) {
@@ -208,7 +265,7 @@ public class AppApiVolley implements  AppApi {
                 stringBuilder.append(String.valueOf(
                         stream.toByteArray()[stream.toByteArray().length - 1]));
                 String orgStr = chat.getOrganization().getId() + "!" + chat.getOrganization().getName()
-                        + "!" + chat.getOrganization().getType() + "!" + "stringBuilder" + "!" +
+                        + "!" + chat.getOrganization().getType() + "!" + stringBuilder + "!" +
                         chat.getOrganization().getDescription() + "!" +
                         chat.getOrganization().getAddress() + "!" + chat.getOrganization().getNeeds() +
                         "!" + chat.getOrganization().getLinkToWebsite();
@@ -317,7 +374,7 @@ public class AppApiVolley implements  AppApi {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(chat.getPerson().getPhotoPer(),
                         0, chat.getPerson().getPhotoPer().length);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                Bitmap.CompressFormat imFor = Bitmap.CompressFormat.PNG;
+                Bitmap.CompressFormat imFor = Bitmap.CompressFormat.JPEG;
                 bitmap.compress(imFor, 0, stream);
 
                 for (int i = 0; i < stream.toByteArray().length - 1; i++) {
@@ -333,7 +390,7 @@ public class AppApiVolley implements  AppApi {
                 bitmap = BitmapFactory.decodeByteArray(chat.getOrganization().getPhotoOrg(),
                         0, chat.getOrganization().getPhotoOrg().length);
                 stream = new ByteArrayOutputStream();
-                imFor = Bitmap.CompressFormat.PNG;
+                imFor = Bitmap.CompressFormat.JPEG;
                 bitmap.compress(imFor, 0, stream);
                 stringBuilder.delete(0, stringBuilder.length());
                 for (int i = 0; i < stream.toByteArray().length - 1; i++) {

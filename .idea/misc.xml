@@ -6,6 +6,7 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable-v24/bt_fav_false.xml" value="0.126" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable/ava.xml" value="0.106" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable/blue_arrow_back.xml" value="0.106" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable/bt_add.xml" value="0.104" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable/bt_full_info.xml" value="0.1" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable/bt_history_dark.xml" value="0.1" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable/bt_msg.xml" value="0.106" />
@@ -25,7 +26,7 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/full_info_fragment.xml" value="0.18" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/list_fragment.xml" value="0.2" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/list_of_chats_fragment.xml" value="0.15" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/main_fragment.xml" value="0.17916666666666667" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/main_fragment.xml" value="0.2" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/msg_my.xml" value="0.18" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/msg_other.xml" value="0.1" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/reg_fragment.xml" value="0.1" />

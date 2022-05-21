@@ -1,5 +1,8 @@
 package com.example.mainproject.rest;
 
+import android.graphics.Bitmap;
+import android.icu.text.StringPrepParseException;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mainproject.domain.Chat;
@@ -19,6 +22,8 @@ public interface AppApi {
     void fillMessageByChatID(int chat_id);
 
     void addMessage(Message message);
+    void updatePerson(int id, String telephone, String email, String name, byte[] photoPer,
+                      int age, String dateOfBirth, String city);
 
 }
 

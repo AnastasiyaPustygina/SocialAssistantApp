@@ -1,5 +1,7 @@
 package com.example.mainproject.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import com.example.mainproject.R;
 import com.example.mainproject.domain.Person;
 import com.example.mainproject.rest.AppApiVolley;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class RegFragment extends Fragment {
@@ -40,6 +43,8 @@ public class RegFragment extends Fragment {
     private TextView checking, tv_data;
 
 
+
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.reg_fragment, container, false);
     }
@@ -47,6 +52,7 @@ public class RegFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
         /*OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
         openHelper.deleteAllChat();
         openHelper.deleteAllMessage();
@@ -105,13 +111,21 @@ public class RegFragment extends Fragment {
         bt_reg_fr_reg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int check = 0;
                 name = edName.getText().toString();
                 try {
                     age = Integer.parseInt(edAge.getText().toString());
                 } catch (Exception e) {
+                    checking.setText("Введите корректные данные");
+                    check = 1;
                 }
                  data = edTelOrEmail.getText().toString();
-
+                OpenHelper openHelper = new OpenHelper(
+                        getContext(), "OpenHelder", null, OpenHelper.VERSION);
+                if(openHelper.findAllName().contains(name)) {
+                    check = -1;
+                    checking.setText("Такий логин уже существует");
+                }
                 dateOfBirth = edBateOfBirth.getText().toString();
                 city = edCity.getText().toString();
                 password1 = edPass1.getText().toString();
@@ -124,18 +138,34 @@ public class RegFragment extends Fragment {
                         || password1.isEmpty()
                         || password2.isEmpty()) {
                    checking.setText("Не все поля заполнены");
-                } else {
-                    if (!password1.equals(password2)) {
+                }
+                else if (!password1.equals(password2)) {
                         checking.setText("Пароли не совпадают");
-                    } else {
+                    } else if (check == 0){
 
-                        Bitmap bitmap = BitmapFactory.decodeResource(
-                                getResources(), R.drawable.image_for_checking);
-                        OpenHelper openHelper = new OpenHelper(
-                                getContext(), "OpenHelder", null, OpenHelper.VERSION);
-                        openHelper.insert(new Person(data, name, bitmap, age, dateOfBirth, city, password1));
-                        new AppApiVolley(getContext()).addPerson
-                                (openHelper.findPersonByLogin(name));
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                                R.drawable.ava_for_project);
+
+                        SharedPreferences.Editor editor = SignInFragment.sharedPreferences.edit();
+                        StringBuilder stringBuilder = new StringBuilder();
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        Bitmap.CompressFormat imFor = Bitmap.CompressFormat.JPEG;
+                        bitmap.compress(imFor, 0, stream);
+                        byte[] photoPer = stream.toByteArray();
+                        for (int i = 0; i < photoPer.length - 1; i++) {
+                            stringBuilder.append(String.valueOf(photoPer[i])).append(" ");
+                        }
+                        stringBuilder.append(String.valueOf(
+                                photoPer[photoPer.length - 1]));
+
+                        editor.putString("per_photo" + name, stringBuilder.toString());
+                        editor.commit();
+
+
+                                openHelper.insert(new Person(data, name, age, dateOfBirth, city, password1));
+
+                            new AppApiVolley(getContext()).addPerson
+                                    (openHelper.findPersonByLogin(name));
 
                         bt_reg_fr_reg.setOnClickListener((view1) -> {
                             NavHostFragment.
@@ -145,7 +175,6 @@ public class RegFragment extends Fragment {
                         bt_reg_fr_reg.performClick();
                     }
                 }
-            }
         });
     }
 }

@@ -48,7 +48,6 @@ public class OpenHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ORGNAME = "orgName";
     public static final String COLUMN_TYPE = "type";
     public static final String COLUMN_PHOTOORG = "OrganizationPhoto";
-    public static final String COLUMN_PHOTOPERSON = "PersonPhoto";
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_ADDRESS = "address";
     public static final String COLUMN_NEEDS = "needs";
@@ -95,8 +94,7 @@ public class OpenHelper extends SQLiteOpenHelper {
 
         String query = "CREATE TABLE " + TABLE_PERSON_NAME + "(" +
                         COLUMN_PERSON_ID + " INTEGER, " +
-                        COLUMN_NAME + " TEXT, " +
-                        COLUMN_PHOTOPERSON + " BLOB, "
+                        COLUMN_NAME + " TEXT, "
                         + COLUMN_AGE + " INTEGER, " +
                         COLUMN_TELEPHONE + " TEXT, "
                         + COLUMN_EMAIL + " TEXT, "
@@ -147,7 +145,6 @@ public class OpenHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_PERSON_ID, idPer);
         contentValues.put(COLUMN_NAME, person.getName());
-        contentValues.put(COLUMN_PHOTOPERSON, person.getPhotoPer());
         contentValues.put(COLUMN_FAV_ORG, "");
         contentValues.put(COLUMN_TELEPHONE, person.getTelephone());
         contentValues.put(COLUMN_EMAIL, person.getEmail());
@@ -363,7 +360,6 @@ public class OpenHelper extends SQLiteOpenHelper {
         if(!cur.isAfterLast()){
             do{
                 int id = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_PERSON_ID));
-                byte[] photo = cur.getBlob(cur.getColumnIndexOrThrow(COLUMN_PHOTOPERSON));
                 String pass = cur.getString(cur.getColumnIndexOrThrow(COLUMN_PASSWORD));
                 int age = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_AGE));
                 String telephone = cur.getString(cur.getColumnIndexOrThrow(COLUMN_TELEPHONE));
@@ -371,15 +367,13 @@ public class OpenHelper extends SQLiteOpenHelper {
                 String dateOfBirth = cur.getString(cur.getColumnIndexOrThrow(COLUMN_DATE_OF_BIRTH));
                 String city = cur.getString(cur.getColumnIndexOrThrow(COLUMN_CITY));
                 String name = cur.getString(cur.getColumnIndexOrThrow(COLUMN_NAME));
-                String fav = cur.getString(cur.getColumnIndexOrThrow(COLUMN_FAV_ORG));
                 if(name.equals(log)) {
                     String data = telephone == null ? email : telephone;
-                    return new Person(id, data, name, BitmapFactory.decodeByteArray(
-                            photo, 0 ,photo.length), age, dateOfBirth, city, pass);
+                    return new Person(id, data, name, age, dateOfBirth, city, pass);
                 }
             }while (cur.moveToNext());
         }
-        return new Person(null, null, null, 0,  null, null, null);
+        return new Person(0, null, null, 0,  null, null, null);
     }
     public Person findPersonById(int idPer){
         SQLiteDatabase db = getReadableDatabase();
@@ -390,7 +384,6 @@ public class OpenHelper extends SQLiteOpenHelper {
             do{
                 int id = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_PERSON_ID));
                 String pass = cur.getString(cur.getColumnIndexOrThrow(COLUMN_PASSWORD));
-                byte[] photo = cur.getBlob(cur.getColumnIndexOrThrow(COLUMN_PHOTOPERSON));
                 int age = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_AGE));
                 String telephone = cur.getString(cur.getColumnIndexOrThrow(COLUMN_TELEPHONE));
                 String email = cur.getString(cur.getColumnIndexOrThrow(COLUMN_EMAIL));
@@ -399,8 +392,7 @@ public class OpenHelper extends SQLiteOpenHelper {
                 String name = cur.getString(cur.getColumnIndexOrThrow(COLUMN_NAME));
                 if(id == idPer) {
                     String data = telephone == null ? email : telephone;
-                    return new Person(id, data, name,BitmapFactory.decodeByteArray(
-                            photo, 0 ,photo.length), age, dateOfBirth, city, pass);
+                    return new Person(id, data, name, age, dateOfBirth, city, pass);
                 }
             }while (cur.moveToNext());
         }
@@ -504,6 +496,13 @@ public class OpenHelper extends SQLiteOpenHelper {
         }
         return new Chat(null, null);
     }
+//    public void changePhotoByName(byte[] photo, String name){
+//        Log.e("CHANGE_PHOTO_PER", Arrays.toString(photo));
+//        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
+//        sqLiteDatabase.execSQL("UPDATE " + TABLE_PERSON_NAME + " SET " +
+//                COLUMN_PHOTOPERSON + " = '" + photo + "' WHERE " + COLUMN_NAME
+//                + " = '" + name + "'");
+//    }
 
     public ArrayList<Message> findMsgByChatId(int chatId){
         ArrayList<Message> res = new ArrayList<>();
@@ -526,6 +525,7 @@ public class OpenHelper extends SQLiteOpenHelper {
         }while (cursor.moveToNext());
         return res;
     }
+
     public int findPersonIdByChatId(int chatId){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_CHAT_NAME,
@@ -686,14 +686,12 @@ public class OpenHelper extends SQLiteOpenHelper {
             int columnCityIndex = cursor.getColumnIndex(COLUMN_CITY);
             int columnPasswordIndex = cursor.getColumnIndex(COLUMN_PASSWORD);
             int columnFavIndex = cursor.getColumnIndex(COLUMN_FAV_ORG);
-            int columnPerPhoto = cursor.getColumnIndexOrThrow(COLUMN_PHOTOPERSON);
 
             ArrayList<String> arr_fav_org = new ArrayList<>();
             do {
                 int id = cursor.getInt(columnIdIndex);
                 String name = cursor.getString(columnNameIndex);
                 int age = cursor.getInt(columnAgeIndex);
-                byte[] photo = cursor.getBlob(columnPerPhoto);
                 String telephone = cursor.getString(columnTelephoneIndex);
                 String email = cursor.getString(columnEmailIndex);
                 String dateOfBirth = cursor.getString(columnDateOfBirthIndex);
@@ -702,14 +700,39 @@ public class OpenHelper extends SQLiteOpenHelper {
                 String favOrg = cursor.getString(columnFavIndex);
                 arr_fav_org.add(favOrg);
                 String data = telephone == null ? email : telephone;
-                people.add(new Person(id, data, name,BitmapFactory.decodeByteArray(
-                        photo, 0 ,photo.length), age, dateOfBirth, city, password));
+                people.add(new Person(id, data, name, age, dateOfBirth, city, password));
             }while (cursor.moveToNext());
         } catch (Exception e){
-            Log.e("MY_LOG", e.getMessage());
+            Log.e("FIND_ALL_PEOPLE", e.getMessage());
         };
         return people;
     }
+
+    public List<String> findAllName() {
+        List<String> names = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        try{
+            Cursor cursor = db.query(TABLE_PERSON_NAME,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
+            cursor.moveToFirst();
+            int columnNameIndex = cursor.getColumnIndex(COLUMN_NAME);
+
+            ArrayList<String> arr_fav_org = new ArrayList<>();
+            do {
+                String name = cursor.getString(columnNameIndex);
+                names.add(name);
+            }while (cursor.moveToNext());
+        } catch (Exception e){
+            Log.e("FIND_ALL_NAME", e.getMessage());
+        };
+        return names;
+    }
+
     public ArrayList<Organization> findAllOrganizations() {
         ArrayList<Organization> arrOrg = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
