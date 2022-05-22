@@ -18,7 +18,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new MainMyThread(this).run();
+        MainMyThread mainMyThread = new MainMyThread(this);
+        mainMyThread.run();
+        try {
+            mainMyThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        OpenHelper openHelper = new OpenHelper(this, "OpenHelder",
+                null, OpenHelper.VERSION);
+        try {
+            Log.e("MSG", openHelper.findAllMsg().toString());
+        }catch (Exception e){
+            Log.e("MSG", e.getMessage());
+        }
     }
 
 }
@@ -34,5 +47,7 @@ class MainMyThread extends Thread{
 
         new AppApiVolley(context).fillOrganization();
         new AppApiVolley(context).fillChats();
+        new AppApiVolley(context).fillMsg();
+
     }
 }

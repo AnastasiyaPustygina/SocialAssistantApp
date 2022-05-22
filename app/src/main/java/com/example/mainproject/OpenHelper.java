@@ -47,7 +47,6 @@ public class OpenHelper extends SQLiteOpenHelper {
     public static final String COLUMN_FAV_ORG = "favourite_organizations";
     public static final String COLUMN_ORGNAME = "orgName";
     public static final String COLUMN_TYPE = "type";
-    public static final String COLUMN_PHOTOORG = "OrganizationPhoto";
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_ADDRESS = "address";
     public static final String COLUMN_NEEDS = "needs";
@@ -107,8 +106,7 @@ public class OpenHelper extends SQLiteOpenHelper {
             query = "CREATE TABLE " + TABLE_ORG_NAME + "(" +
                     COLUMN_ORGANIZATION_ID + " INTEGER, " +
                     COLUMN_ORGNAME + " TEXT, " +
-                    COLUMN_TYPE + " TEXT, " +
-                    COLUMN_PHOTOORG + " BLOB, "
+                    COLUMN_TYPE + " TEXT, "
                     + COLUMN_DESCRIPTION + " TEXT, "
                     + COLUMN_ADDRESS + " TEXT, "
                     + COLUMN_NEEDS + " TEXT, "
@@ -165,7 +163,6 @@ public class OpenHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_ORGANIZATION_ID, idOrg);
         contentValues.put(COLUMN_ORGNAME, org.getName());
         contentValues.put(COLUMN_TYPE, org.getType());
-        contentValues.put(COLUMN_PHOTOORG, org.getPhotoOrg());
         contentValues.put(COLUMN_DESCRIPTION, org.getDescription());
         contentValues.put(COLUMN_ADDRESS, org.getAddress());
         contentValues.put(COLUMN_NEEDS, org.getNeeds());
@@ -191,6 +188,7 @@ public class OpenHelper extends SQLiteOpenHelper {
     public long insertMsg(Message msg) {
         int idMsg = sharedPreferences.getInt("msg_id", 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        Log.e("INSERT_MESSAGE", msg.getValues());
         editor.putInt("msg_id", idMsg + 1);
         editor.commit();
         ContentValues contentValues = new ContentValues();
@@ -213,14 +211,15 @@ public class OpenHelper extends SQLiteOpenHelper {
         mDataBase.delete(TABLE_PERSON_NAME, null, null);
     }
     public void deleteMsgByChatId(int id_chat){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        int prevIdMsg = sharedPreferences.getInt("msg_id", 0);
-        editor.remove("msg_id");
-        editor.putInt("msg_id", prevIdMsg - findMsgByChatId(id_chat).size());
-        editor.commit();
-        SQLiteDatabase mDataBase = getWritableDatabase();
-        mDataBase.execSQL("DELETE FROM " + TABLE_MSG_NAME + " WHERE " + COLUMN_MSG_CHAT_ID
-                + " = " + id_chat + ";");
+        ArrayList<Message> arrayList = new ArrayList<>();
+        for (int i = 0; i < findAllMsg().size(); i++) {
+            if(!(findAllMsg().get(i).getChat_id() == id_chat))
+                arrayList.add(findAllMsg().get(i));
+        }
+        deleteAllChat();
+        for (int i = 0; i < arrayList.size(); i++) {
+            insertMsg(arrayList.get(i));
+        }
 
     }
     public void deleteAllOrganization() {
@@ -409,19 +408,17 @@ public class OpenHelper extends SQLiteOpenHelper {
                 int id = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_ORGANIZATION_ID));
                 String name = cur.getString(cur.getColumnIndexOrThrow(COLUMN_ORGNAME));
                 String type = cur.getString(cur.getColumnIndexOrThrow(COLUMN_TYPE));
-                byte[] photo = cur.getBlob(cur.getColumnIndexOrThrow(COLUMN_PHOTOORG));
                 String desc = cur.getString(cur.getColumnIndexOrThrow(COLUMN_DESCRIPTION));
                 String address = cur.getString(cur.getColumnIndexOrThrow(COLUMN_ADDRESS));
                 String needs = cur.getString(cur.getColumnIndexOrThrow(COLUMN_NEEDS));
                 String link = cur.getString(cur.getColumnIndexOrThrow(COLUMN_LINKWEB));
 
                 if(name.equals(nameOrg)) {
-                    return new Organization(id, name, type, BitmapFactory.decodeByteArray(
-                            photo, 0, photo.length), desc, address, needs, link);
+                    return new Organization(id, name, type, desc, address, needs, link);
                 }
             }while (cur.moveToNext());
         }
-        return new Organization(100, null, null, null,null,
+        return new Organization(100, null, null,null,
                 null, null, null);
     }
     public Organization findOrgByAddress(String addr){
@@ -434,19 +431,17 @@ public class OpenHelper extends SQLiteOpenHelper {
                 int id = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_ORGANIZATION_ID));
                 String name = cur.getString(cur.getColumnIndexOrThrow(COLUMN_ORGNAME));
                 String type = cur.getString(cur.getColumnIndexOrThrow(COLUMN_TYPE));
-                byte[] photo = cur.getBlob(cur.getColumnIndexOrThrow(COLUMN_PHOTOORG));
                 String desc = cur.getString(cur.getColumnIndexOrThrow(COLUMN_DESCRIPTION));
                 String address = cur.getString(cur.getColumnIndexOrThrow(COLUMN_ADDRESS));
                 String needs = cur.getString(cur.getColumnIndexOrThrow(COLUMN_NEEDS));
                 String link = cur.getString(cur.getColumnIndexOrThrow(COLUMN_LINKWEB));
 
                 if(address.equals(addr)) {
-                    return new Organization(id, name, type, BitmapFactory.decodeByteArray(
-                            photo, 0, photo.length), desc, address, needs, link);
+                    return new Organization(id, name, type, desc, address, needs, link);
                 }
             }while (cur.moveToNext());
         }
-        return new Organization(100, null, null, null,null,
+        return new Organization(100, null, null, null,
                 null, null, null);
     }
 
@@ -460,19 +455,18 @@ public class OpenHelper extends SQLiteOpenHelper {
                 int id = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_ORGANIZATION_ID));
                 String name = cur.getString(cur.getColumnIndexOrThrow(COLUMN_ORGNAME));
                 String type = cur.getString(cur.getColumnIndexOrThrow(COLUMN_TYPE));
-                byte[] photo = cur.getBlob(cur.getColumnIndexOrThrow(COLUMN_PHOTOORG));
                 String desc = cur.getString(cur.getColumnIndexOrThrow(COLUMN_DESCRIPTION));
                 String address = cur.getString(cur.getColumnIndexOrThrow(COLUMN_ADDRESS));
                 String needs = cur.getString(cur.getColumnIndexOrThrow(COLUMN_NEEDS));
                 String link = cur.getString(cur.getColumnIndexOrThrow(COLUMN_LINKWEB));
 
                 if(id == idOrg) {
-                    return new Organization(id, name, type, BitmapFactory.decodeByteArray(photo, 0, photo.length), desc,
+                    return new Organization(id, name, type, desc,
                             address, needs, link);
                 }
             }while (cur.moveToNext());
         }
-        return new Organization(1000, null, null,null,
+        return new Organization(1000, null,null,
                 null, null, null, null);
     }
 
@@ -616,7 +610,7 @@ public class OpenHelper extends SQLiteOpenHelper {
             int orgId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ORGANIZATION_CHAT_ID));
             if(currentChatId == chat_id) return findOrgById(orgId);
         }while (cursor.moveToNext());
-        return new Organization(0, null, null, null,null,
+        return new Organization(0, null, null,null,
                 null, null, null);
     }
     public int findChatIdByOrgIdAndPerId(int orgId, int perId){
@@ -748,7 +742,6 @@ public class OpenHelper extends SQLiteOpenHelper {
             int columnIdIndex = cursor.getColumnIndex(COLUMN_ORGANIZATION_ID);
             int columnNameIndex = cursor.getColumnIndex(COLUMN_ORGNAME);
             int columnTypeIndex = cursor.getColumnIndex(COLUMN_TYPE);
-            int columnPhotoIndex = cursor.getColumnIndex(COLUMN_PHOTOORG);
             int columnDescIndex = cursor.getColumnIndex(COLUMN_DESCRIPTION);
             int columnAddressIndex = cursor.getColumnIndex(COLUMN_ADDRESS);
             int columnNeedsIndex = cursor.getColumnIndex(COLUMN_NEEDS);
@@ -758,14 +751,12 @@ public class OpenHelper extends SQLiteOpenHelper {
                 int id = cursor.getInt(columnIdIndex);
                 String name = cursor.getString(columnNameIndex);
                 String type = cursor.getString(columnTypeIndex);
-                byte[] photo = cursor.getBlob(columnPhotoIndex);
                 String desc = cursor.getString(columnDescIndex);
                 String address = cursor.getString(columnAddressIndex);
                 String needs = cursor.getString(columnNeedsIndex);
                 String link = cursor.getString(columnLinkIndex);
 
                 arrOrg.add(new Organization(id, name, type,
-                        BitmapFactory.decodeByteArray(photo, 0, photo.length),
                         desc, address, needs, link));
             }while (cursor.moveToNext());} catch (Exception e){
             Log.e("MY_LOG", e.getMessage());
@@ -833,5 +824,22 @@ public class OpenHelper extends SQLiteOpenHelper {
             arrMsg.add(message);
         }while (cursor.moveToNext());
         return arrMsg;
+    }
+    public ArrayList<Integer> findAllChatId(){
+        ArrayList<Integer> arrChat = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_CHAT_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+        cursor.moveToFirst();
+        do {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MSG_CHAT_ID));
+            arrChat.add(id);
+        }while (cursor.moveToNext());
+        return arrChat;
     }
 }

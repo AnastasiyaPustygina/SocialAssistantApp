@@ -122,8 +122,18 @@ public class MainFragment extends Fragment {
         bt_chat = getActivity().findViewById(R.id.bt_main_chat);
 
 
-        OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
-
+        OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder",
+                null, OpenHelper.VERSION);
+        try {
+            Log.e("MSG", openHelper.findAllMsg().toString());
+        }catch (Exception e){
+            Log.e("MSG", e.getMessage());
+        }
+        try{
+        Log.e("CHATS", openHelper.findAllChats().toString());
+    }catch (Exception e){
+        Log.e("Chats", e.getMessage());
+    }
         Person client = openHelper.findPersonByLogin(nameVal);
         try {
             iv_ava.setImageBitmap(BitmapFactory.decodeByteArray(

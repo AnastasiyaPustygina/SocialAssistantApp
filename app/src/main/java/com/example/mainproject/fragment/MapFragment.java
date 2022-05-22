@@ -13,6 +13,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapFragment extends Fragment  {
@@ -54,24 +56,13 @@ public class MapFragment extends Fragment  {
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(@NonNull GoogleMap googleMap) {
-               /* googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(@NonNull LatLng latLng) {
-                        MarkerOptions markerOptions = new MarkerOptions();
-                        markerOptions.position(latLng);
-                        markerOptions.title(latLng.latitude + ":" + latLng.longitude);
-                        googleMap.clear();
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                latLng, 10
-                        ));
-                        googleMap.addMarker(markerOptions);
-
-                    }
-                });*/
-                if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&ActivityCompat.checkSelfPermission
-                        (getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED &&ActivityCompat.checkSelfPermission
+                        (getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED
                 ){
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, request_Code );
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION}, request_Code );
                 }
                 if(isTouch) {
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
@@ -79,11 +70,19 @@ public class MapFragment extends Fragment  {
                     ));
                 }
                 googleMap.setMyLocationEnabled(true);
-                OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
+                OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null,
+                        OpenHelper.VERSION);
+                ArrayList<Organization> arrayOrgList = openHelper.findAllOrganizations();
                 try {
-                    LatLng latLng = getLocationFromAddress("Moscow, Parshina street, 8", googleMap);
-                    Marker parshinaMarker = googleMap.addMarker(new MarkerOptions().position(latLng).
-                            title("Address3"));
+                    for (int i = 0; i < arrayOrgList.size(); i++) {
+                        try {
+                            LatLng latLng = getLocationFromAddress(arrayOrgList.get(i).getAddress(), googleMap);
+                            googleMap.addMarker(new MarkerOptions().position(latLng).
+                                    title(arrayOrgList.get(i).getAddress()));
+                        }catch (Exception e){
+                            Log.e("ADD_MARKER", e.getMessage());
+                        }
+                    }
                     googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(@NonNull Marker marker) {
@@ -104,14 +103,8 @@ public class MapFragment extends Fragment  {
                             return true;
                         }
                     });
-                    latLng = getLocationFromAddress("Moscow, Perovskaya street, 1", googleMap);
-                    Marker perovskayaMarker = googleMap.addMarker(new MarkerOptions().position(latLng).
-                            title("SecondAddress"));
-                    latLng = getLocationFromAddress("Moscow, Mohovaya street, 4", googleMap);
-                    Marker mohovayaMarker = googleMap.addMarker(new MarkerOptions().position(latLng).
-                            title("Address"));
                 }catch (Exception e){
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("MAP LATLNG", e.getMessage());
                 }
             }
         });

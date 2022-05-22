@@ -41,8 +41,9 @@ public class SignInFragment extends Fragment {
        OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
        try {
            Log.e("PEOPLE", openHelper.findAllPeople().toString());
-           Log.e("CHATS", openHelper.findAllChats().toString());
+
            Log.e("ORG", openHelper.findAllOrganizations().toString());
+
        }catch (Exception ignored){}
 
        TextView checking = getActivity().findViewById(R.id.tv_check);

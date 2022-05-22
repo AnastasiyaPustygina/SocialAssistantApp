@@ -19,8 +19,8 @@ public interface AppApi {
 
     void fillChats();
 
-    void fillMessageByChatID(int chat_id);
-
+//    void fillMessageByChatID(int chat_id);
+    void fillMsg();
     void addMessage(Message message);
     void updatePerson(int id, String telephone, String email, String name, byte[] photoPer,
                       int age, String dateOfBirth, String city);

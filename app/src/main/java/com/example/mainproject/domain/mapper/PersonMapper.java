@@ -46,7 +46,8 @@ public class PersonMapper {
 //            }
             SharedPreferences sharedPreferences = SignInFragment.sharedPreferences;
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("per_photo" + jsonObject.getString("name"), data);
+            editor.putString("per_photo" + jsonObject.getString("name"),
+                    jsonObject.getString("photo"));
             editor.commit();
             person = new Person(jsonObject.getInt("id"), data,
                     jsonObject.getString("name"), jsonObject.getInt("age"),

@@ -59,9 +59,7 @@ public class FullInfoFragment extends Fragment {
         Organization organization = openHelper.findOrgByName(getArguments().getString("NameOrg"));
         Bitmap bitmap = BitmapFactory.
                 decodeByteArray(organization.getPhotoOrg(), 0, organization.getPhotoOrg().length);
-        RoundedBitmapDrawable roundDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-        roundDrawable.setCircular(true);
-        photoOrg.setImageDrawable(roundDrawable);
+        photoOrg.setImageBitmap(bitmap);
         name.setText(organization.getName());
         String tmp = getColoredSpanned(organization.getType(), "#000000");
         type.setText(Html.fromHtml("Тип:" + "\n" + tmp));

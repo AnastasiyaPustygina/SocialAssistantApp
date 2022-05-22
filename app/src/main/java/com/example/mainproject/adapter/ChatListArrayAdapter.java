@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,8 +69,9 @@ public class ChatListArrayAdapter extends RecyclerView.Adapter<ChatListArrayAdap
             holder.tvNameOrg.setText(organization.getName());
             Bundle bundle = new Bundle();
             bundle.putString("LOG", name);
+            bundle.putString("NameOrg", arrayListLastOrg.get(arrayListLastOrg.size() - position - 1).
+                    getName());
 
-            bundle.putString("NameOrg", arrayListLastOrg.get(arrayListLastOrg.size() - position - 1).getName());
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -85,7 +87,7 @@ public class ChatListArrayAdapter extends RecyclerView.Adapter<ChatListArrayAdap
                 }
             });
         } catch (Exception e){
-            Toast.makeText(context, arrListChatId.toString(), Toast.LENGTH_SHORT).show();
+            Log.e("CHAT_LIST_ARRAY_ADAPTER", e.getMessage());
         }
     }
 

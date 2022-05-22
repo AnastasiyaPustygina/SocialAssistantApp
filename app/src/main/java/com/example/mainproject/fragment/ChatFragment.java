@@ -1,5 +1,6 @@
 package com.example.mainproject.fragment;
 
+import android.content.SharedPreferences;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.BitmapFactory;
 import android.graphics.LightingColorFilter;
@@ -49,6 +50,7 @@ public class ChatFragment extends Fragment {
         imOrg = getActivity().findViewById(R.id.iv_ch_imOrg);
         ivMicro = getActivity().findViewById(R.id.iv_chat_micro);
         nameOrg = getActivity().findViewById(R.id.tv_ch_nameOrg);
+        SharedPreferences sharedPreferences = SignInFragment.sharedPreferences;
         OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
 
         int perId = openHelper.findPersonByLogin(
@@ -64,6 +66,11 @@ public class ChatFragment extends Fragment {
             rec.scrollToPosition(openHelper.findMsgByChatId(
                     openHelper.findChatIdByOrgIdAndPerId(org.getId(),perId)).size() - 1);
         }catch (CursorIndexOutOfBoundsException ignored){}
+
+        byte[] photoByte = org.getPhotoOrg();
+        imOrg.setImageBitmap(BitmapFactory.decodeByteArray(photoByte, 0, photoByte.length));
+
+
         imOrg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,8 +101,6 @@ public class ChatFragment extends Fragment {
             }
         });
 
-        imOrg.setImageBitmap(BitmapFactory.
-                decodeByteArray(org.getPhotoOrg(), 0, org.getPhotoOrg().length));
         nameOrg.setText(org.getName());
 
         et_msg.addTextChangedListener(new TextWatcher() {
@@ -112,10 +117,12 @@ public class ChatFragment extends Fragment {
                     public void onClick(View view) {
                         String curTime = new SimpleDateFormat(
                                 "HH:mm", Locale.getDefault()).format(new Date());
-                        Message myMsg = new Message("me",
+                        Message myMsg = new Message("person",
                                 openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId), et_msg.getText().toString(),
                                 curTime);
                         openHelper.insertMsg(myMsg);
+                        Log.e("INDEX_AFRET INSERT", openHelper.findLastMessageByChatId(
+                                openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId)).getId() + "");
                         new AppApiVolley(getContext()).addMessage(
                                 openHelper.findLastMessageByChatId(
                                         openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId)));

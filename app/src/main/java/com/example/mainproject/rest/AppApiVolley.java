@@ -3,6 +3,7 @@ package com.example.mainproject.rest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -49,7 +50,7 @@ public class AppApiVolley implements  AppApi {
 
 
     private final Context context;
-    public static final String BASE_URL = "http://192.168.1.45:8081";
+    public static final String BASE_URL = "http://192.168.1.33:8081";
     private com.android.volley.Response.ErrorListener errorListener;
 
 
@@ -82,21 +83,15 @@ public class AppApiVolley implements  AppApi {
                                 JSONObject jsonObject = response.getJSONObject(i);
                                 Organization organization = OrganizationMapper.
                                         organizationFromJson(jsonObject);
-                                Bitmap bitmap;
-                                if(organization.getPhotoOrg() == null){
-                                    bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_channel);
-                                }
-                                 else {
-                                    bitmap = BitmapFactory.decodeByteArray(
-                                            organization.getPhotoOrg(), 0, organization.getPhotoOrg().length);
-                                }
+
                                 ArrayList<String> arrListName = new ArrayList<String>();
                                 for (int j = 0; j < openHelper.findAllOrganizations().size(); j++) {
                                     arrListName.add(openHelper.findAllOrganizations().get(j).getName());
                                 }
+
                                 if(!arrListName.contains(organization.getName())) {
                                     openHelper.insertOrg(new Organization(organization.getName(),
-                                            organization.getType(), bitmap,
+                                            organization.getType(),
                                             organization.getDescription(), organization.getAddress(),
                                             organization.getNeeds(), organization.getLinkToWebsite()));
                                     Log.e("API_TEST_FILL_ORG", organization.getName());
@@ -108,7 +103,7 @@ public class AppApiVolley implements  AppApi {
                                             organization.getNeeds());
                                 }
                             }
-                            Log.d("API_TEST_FILL_ORG", openHelper.findAllOrganizations().toString());
+                            Log.e("API_TEST_FILL_ORG_ALL", openHelper.findAllOrganizations().toString());
                         }catch (JSONException e) {
                             Log.e("API_TEST_FILL_ORG", e.getMessage());
                         }
@@ -129,25 +124,13 @@ public class AppApiVolley implements  AppApi {
             params.put("telephone", person.getTelephone());
             params.put("email", person.getEmail());
             params.put("city", person.getCity());
-            SharedPreferences sharedPreferences = MainFragment.sharedPreferences;
-            String photo = sharedPreferences.getString("per_photo" + person.getName(), "notPerPhotoInPref");
-            StringBuilder stringBuilder = new StringBuilder();
-            Bitmap bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(
-                    person.getPhotoPer(), 0, person.getPhotoPer().length),
-                    150, 150, false);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            Bitmap.CompressFormat imFor = Bitmap.CompressFormat.JPEG;
-            bitmap.compress(imFor, 0, stream);
 
-            for (int i = 0; i < stream.toByteArray().length - 1; i++) {
-                stringBuilder.append(String.valueOf(stream.toByteArray()[i])).append(" ");
-            }
-            stringBuilder.append(String.valueOf(
-                    stream.toByteArray()[stream.toByteArray().length - 1]));
-            params.put("photo", stringBuilder.toString());
+            SharedPreferences sharedPreferences = MainFragment.sharedPreferences;
+
+            params.put("photo", sharedPreferences.getString("per_photo" + person.getName(),
+                    "CANNOT_FIND_PERSON_PHOTO_PREF"));
             params.put("date_of_birth", person.getDateOfBirth());
             params.put("age", person.getAge());
-            bitmap.recycle();
         } catch (JSONException e) {
             Log.e("API_TASK_ADD_PER", e.getMessage());
         }
@@ -176,8 +159,7 @@ public class AppApiVolley implements  AppApi {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        OpenHelper openHelper = new OpenHelper(
-                                context, "OpenHelder", null, OpenHelper.VERSION);
+
                         Log.e("UPDATE_PER_PHOTO", Arrays.toString(photoPer));
                         SharedPreferences sharedPreferences = MainFragment.sharedPreferences;
                         String photo = sharedPreferences.getString("per_photo" + name,
@@ -236,37 +218,18 @@ public class AppApiVolley implements  AppApi {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                StringBuilder stringBuilder = new StringBuilder();
-                Bitmap bitmap = BitmapFactory.decodeByteArray(chat.getPerson().getPhotoPer(),
-                        0, chat.getPerson().getPhotoPer().length);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                Bitmap.CompressFormat imFor = Bitmap.CompressFormat.JPEG;
-                bitmap.compress(imFor, 0, stream);
-
-                for (int i = 0; i < stream.toByteArray().length - 1; i++) {
-                    stringBuilder.append(String.valueOf(stream.toByteArray()[i])).append(" ");
-                }
-                stringBuilder.append(String.valueOf(
-                        stream.toByteArray()[stream.toByteArray().length - 1]));
+                SharedPreferences sharedPreferences = MainFragment.sharedPreferences;
                 String personStr = chat.getPerson().getId() + "!" + chat.getPerson().getName() +
                         "!" + chat.getPerson().getTelephone() + "!" + chat.getPerson().getEmail() +
                         "!" + chat.getPerson().getCity() + "!" +
-                        "stringBuilder" + "!" + chat.getPerson().getDateOfBirth() + "!"+
+                        sharedPreferences.getString("per_photo" + chat.getPerson().getName(),
+                                "FILL_CHAT_CANNOT_PERSON_PHOTO")
+                         + "!" + chat.getPerson().getDateOfBirth() + "!"+
                 chat.getPerson().getAge();
-                bitmap = BitmapFactory.decodeByteArray(chat.getOrganization().getPhotoOrg(),
-                        0, chat.getOrganization().getPhotoOrg().length);
-                stream = new ByteArrayOutputStream();
-                imFor = Bitmap.CompressFormat.PNG;
-                bitmap.compress(imFor, 0, stream);
-                stringBuilder.delete(0, stringBuilder.length());
-                for (int i = 0; i < stream.toByteArray().length - 1; i++) {
-                    stringBuilder.append(String.valueOf(stream.toByteArray()[i])).append(" ");
-                }
-                stringBuilder.append(String.valueOf(
-                        stream.toByteArray()[stream.toByteArray().length - 1]));
                 String orgStr = chat.getOrganization().getId() + "!" + chat.getOrganization().getName()
-                        + "!" + chat.getOrganization().getType() + "!" + stringBuilder + "!" +
-                        chat.getOrganization().getDescription() + "!" +
+                        + "!" + chat.getOrganization().getType() + "!" +
+                        sharedPreferences.getString("org_photo" + chat.getOrganization().getAddress(), "FILL_CHAT_CANNOT_ORG_PHOTO")
+                        + "!" + chat.getOrganization().getDescription() + "!" +
                         chat.getOrganization().getAddress() + "!" + chat.getOrganization().getNeeds() +
                         "!" + chat.getOrganization().getLinkToWebsite();
 
@@ -314,10 +277,9 @@ public class AppApiVolley implements  AppApi {
                 errorListener);
         referenceQueue.add(jsonArrayRequest);
     }
-
     @Override
-    public void fillMessageByChatID(int chat_id) {
-        String url = BASE_URL + "chat/" + chat_id + "/message/";
+    public void fillMsg() {
+        String url = BASE_URL + "/message";
         RequestQueue referenceQueue = Volley.newRequestQueue(context);
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 Request.Method.GET,
@@ -326,26 +288,68 @@ public class AppApiVolley implements  AppApi {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        OpenHelper openHelper = new OpenHelper(context,
-                                "OpenHelder", null, OpenHelper.VERSION);
-                        openHelper.deleteMsgByChatId(chat_id);
-                        Message message = null;
-                        Log.e("API_TEST", response.length() + "");
+                        OpenHelper openHelper = new OpenHelper(context, "OpenHelder",
+                                null, OpenHelper.VERSION);
+                        openHelper.deleteAllMessage();
+                        Log.e("API_TEST_FILL_MSG", response.length() + "");
                         try {
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject jsonObject = response.getJSONObject(i);
-                                message = MessageMapper.messageFromJson(jsonObject, context);
+                                Message message = MessageMapper.messageFromJson(jsonObject, context);
                                 openHelper.insertMsg(message);
+                                Log.e("FILL MSG", message.toString());
+
                             }
                         }catch (JSONException e) {
-                            Log.e("API_TEST_FILL_MSG", e.getMessage());
+                            Log.e("API_TEST", e.getMessage());
                         }
-                        if(message != null) Log.e("FILL MSG", message + "");
+                        try {
+                            Log.e("AFTER FILL MSG", openHelper.findAllMsg().toString());
+                        }catch (Exception e){
+                            Log.e("AFTER FILL MSG", e.getMessage());
+                        }
                     }
                 },
                 errorListener);
         referenceQueue.add(jsonArrayRequest);
     }
+//    @Override
+//    public void fillMessageByChatID(int chat_id) {
+//        String url = BASE_URL + "/chat/" + chat_id + "/message";
+//        RequestQueue referenceQueue = Volley.newRequestQueue(context);
+//        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+//                Request.Method.GET,
+//                url,
+//                null,
+//                new Response.Listener<JSONArray>() {
+//                    @Override
+//                    public void onResponse(JSONArray response) {
+//                        try {
+//                        OpenHelper openHelper = new OpenHelper(context,
+//                                "OpenHelder", null, OpenHelper.VERSION);
+//                            openHelper.deleteMsgByChatId(chat_id);
+//
+//                        Message message = null;
+//                        Log.e("API_TEST_MSG", response.length() + "");
+//                        try {
+//                            for (int i = 0; i < response.length(); i++) {
+//                                JSONObject jsonObject = response.getJSONObject(i);
+//                                message = MessageMapper.messageFromJson(jsonObject, context);
+//                                openHelper.insertMsg(message);
+//                            }
+//
+//                        }catch (JSONException e) {
+//                            Log.e("API_TEST_FILL_MSG", e.getMessage());
+//                        }
+//                        if(message != null) Log.e("FILL MSG", message + "");
+//                        }catch (CursorIndexOutOfBoundsException e){
+//                            Log.e("No message in chat", chat_id + "");
+//                        }
+//                    }
+//                },
+//                errorListener);
+//        referenceQueue.add(jsonArrayRequest);
+//    }
 
     @Override
     public void addMessage(Message message) {
@@ -356,9 +360,6 @@ public class AppApiVolley implements  AppApi {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        OpenHelper openHelper = new OpenHelper(
-                                context, "OpenHelder", null, OpenHelper.VERSION);
-                        openHelper.insertMsg(message);
                         Log.d("API_TEST_ADD_MSG", response);
                     }
                 },
@@ -367,42 +368,25 @@ public class AppApiVolley implements  AppApi {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                StringBuilder stringBuilder = new StringBuilder();
                 OpenHelper openHelper = new OpenHelper(
                         context, "OpenHelder", null, OpenHelper.VERSION);
                 Chat chat = openHelper.findChatById(message.getChat_id());
-                Bitmap bitmap = BitmapFactory.decodeByteArray(chat.getPerson().getPhotoPer(),
-                        0, chat.getPerson().getPhotoPer().length);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                Bitmap.CompressFormat imFor = Bitmap.CompressFormat.JPEG;
-                bitmap.compress(imFor, 0, stream);
 
-                for (int i = 0; i < stream.toByteArray().length - 1; i++) {
-                    stringBuilder.append(String.valueOf(stream.toByteArray()[i])).append(" ");
-                }
-                stringBuilder.append(String.valueOf(
-                        stream.toByteArray()[stream.toByteArray().length - 1]));
+                SharedPreferences sharedPreferences = MainFragment.sharedPreferences;
                 String personStr = chat.getPerson().getId() + "!" + chat.getPerson().getName() +
                         "!" + chat.getPerson().getTelephone() + "!" + chat.getPerson().getEmail() +
                         "!" + chat.getPerson().getCity() + "!" +
-                        stringBuilder + "!" + chat.getPerson().getDateOfBirth() + "!"+
+                        sharedPreferences.getString("per_photo" + chat.getPerson().getName()
+                                , "FILL_CHAT_CANNOT_PERSON_PHOTO")
+                        + "!" + chat.getPerson().getDateOfBirth() + "!"+
                         chat.getPerson().getAge();
-                bitmap = BitmapFactory.decodeByteArray(chat.getOrganization().getPhotoOrg(),
-                        0, chat.getOrganization().getPhotoOrg().length);
-                stream = new ByteArrayOutputStream();
-                imFor = Bitmap.CompressFormat.JPEG;
-                bitmap.compress(imFor, 0, stream);
-                stringBuilder.delete(0, stringBuilder.length());
-                for (int i = 0; i < stream.toByteArray().length - 1; i++) {
-                    stringBuilder.append(String.valueOf(stream.toByteArray()[i])).append(" ");
-                }
-                stringBuilder.append(String.valueOf(
-                        stream.toByteArray()[stream.toByteArray().length - 1]));
                 String orgStr = chat.getOrganization().getId() + "!" + chat.getOrganization().getName()
-                        + "!" + chat.getOrganization().getType() + "!" + stringBuilder + "!" +
-                        chat.getOrganization().getDescription() + "!" +
+                        + "!" + chat.getOrganization().getType() + "!" +
+                        sharedPreferences.getString("org_photo" + chat.getOrganization().getAddress(), "FILL_CHAT_CANNOT_ORG_PHOTO")
+                        + "!" + chat.getOrganization().getDescription() + "!" +
                         chat.getOrganization().getAddress() + "!" + chat.getOrganization().getNeeds() +
                         "!" + chat.getOrganization().getLinkToWebsite();
+
                 params.put("id", message.getId() + "");
                 params.put("whose", message.getWhose());
                 params.put("value", message.getValues());
