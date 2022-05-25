@@ -19,6 +19,8 @@ public interface AppApi {
 
     void fillChats();
 
+    void checkNewMsg();
+
 //    void fillMessageByChatID(int chat_id);
     void fillMsg();
     void addMessage(Message message);

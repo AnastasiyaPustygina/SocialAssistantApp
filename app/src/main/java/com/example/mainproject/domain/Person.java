@@ -45,7 +45,6 @@ public class Person {
         this.name = name;
 
         SharedPreferences sharedPreferences = SignInFragment.sharedPreferences;
-        Log.e("IsPrefNull", (sharedPreferences == null) + "");
         List<String> stringArrayList = Arrays.asList(
                 sharedPreferences.getString("per_photo" + name, "NOT FOUND PREF").split(" "));
         byte[] byteArray = new byte[stringArrayList.size()];
@@ -68,7 +67,6 @@ public class Person {
         else this.telephone = data;
         this.name = name;
         SharedPreferences sharedPreferences = SignInFragment.sharedPreferences;
-        Log.e("IsPrefNull", (sharedPreferences == null) + "");
         List<String> stringArrayList = Arrays.asList(
                     sharedPreferences.getString("per_photo" + name, "NOT FOUND PREF").split(" "));
         byte[] byteArray = new byte[stringArrayList.size()];
@@ -90,7 +88,6 @@ public class Person {
         this.email = email;
         this.name = name;
         SharedPreferences sharedPreferences = SignInFragment.sharedPreferences;
-        Log.e("IsPrefNull", (sharedPreferences == null) + "");
         List<String> stringArrayList = Arrays.asList(
                 sharedPreferences.getString("per_photo" + name, "NOT FOUND PREF").split(" "));
         byte[] byteArray = new byte[stringArrayList.size()];

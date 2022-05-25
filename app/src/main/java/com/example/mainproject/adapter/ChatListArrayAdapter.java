@@ -75,9 +75,13 @@ public class ChatListArrayAdapter extends RecyclerView.Adapter<ChatListArrayAdap
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new AppApiVolley(context).addChat(new Chat(
+                    openHelper.insertChat(new Chat(
                             openHelper.findPersonByLogin(name),
                             organization));
+                    new AppApiVolley(context).addChat(openHelper.findChatByPersonIdAndOrgId(
+                            openHelper.findPersonByLogin(name).getId(),
+                            organization.getId()
+                    ));
                     holder.itemView.setOnClickListener((view1) -> {
                         NavHostFragment.
                                 findNavController(fragment).navigate(

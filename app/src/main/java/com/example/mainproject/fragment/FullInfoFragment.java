@@ -21,7 +21,9 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.R;
+import com.example.mainproject.domain.Chat;
 import com.example.mainproject.domain.Organization;
+import com.example.mainproject.rest.AppApiVolley;
 
 public class FullInfoFragment extends Fragment {
 
@@ -123,6 +125,15 @@ public class FullInfoFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("LOG", getArguments().getString("LOG"));
                 bundle.putString("NameOrg", getArguments().getString("NameOrg"));
+
+                openHelper.insertChat(new Chat(
+                        openHelper.findPersonByLogin(getArguments().getString("LOG")),
+                        organization));
+                new AppApiVolley(getContext()).addChat(openHelper.findChatByPersonIdAndOrgId(
+                        openHelper.findPersonByLogin(getArguments().getString("LOG")).getId(),
+                        organization.getId()
+                ));
+
                 bt_help.setOnClickListener((view1) -> {
                     NavHostFragment.
                             findNavController(FullInfoFragment.this).navigate(

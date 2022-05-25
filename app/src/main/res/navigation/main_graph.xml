@@ -2,8 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_graph"
-    xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/signInFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <fragment
         tools:layout="@layout/reg_fragment"

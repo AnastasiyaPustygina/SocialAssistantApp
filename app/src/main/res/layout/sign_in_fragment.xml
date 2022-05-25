@@ -93,7 +93,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:background="@drawable/light_circle_button"
-            android:text="  зарегестрироваться  "
+            android:text="  зарегистрироваться  "
             android:textColor="@color/purple_700"
             android:textSize="15sp" />
     </LinearLayout>

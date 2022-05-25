@@ -1,5 +1,6 @@
 package com.example.mainproject.fragment;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.BitmapFactory;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,12 +33,17 @@ import com.example.mainproject.rest.AppApiVolley;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 public class ChatFragment extends Fragment {
 
     private ImageView imOrg, ivMicro, bt_arrow_back;
     private TextView nameOrg;
     private EditText et_msg;
+    private ChatArrayAdapter recyclerAdapter;
+    private AppCompatButton bt_update;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.chat_fragment, container, false);
@@ -50,13 +57,11 @@ public class ChatFragment extends Fragment {
         imOrg = getActivity().findViewById(R.id.iv_ch_imOrg);
         ivMicro = getActivity().findViewById(R.id.iv_chat_micro);
         nameOrg = getActivity().findViewById(R.id.tv_ch_nameOrg);
-        SharedPreferences sharedPreferences = SignInFragment.sharedPreferences;
         OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
 
         int perId = openHelper.findPersonByLogin(
                 getArguments().getString("LOG")).getId();
         Organization org = openHelper.findOrgByName(getArguments().getString("NameOrg"));
-        ChatArrayAdapter recyclerAdapter;
         RecyclerView rec = getActivity().findViewById(R.id.rec_chat);
         try {
 
@@ -64,16 +69,41 @@ public class ChatFragment extends Fragment {
                     ChatFragment.this, openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId));
             rec.setAdapter(recyclerAdapter);
             rec.scrollToPosition(openHelper.findMsgByChatId(
-                    openHelper.findChatIdByOrgIdAndPerId(org.getId(),perId)).size() - 1);
-        }catch (CursorIndexOutOfBoundsException ignored){}
+                    openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId)).size() - 1);
+        } catch (CursorIndexOutOfBoundsException ignored) {
+        }
 
         byte[] photoByte = org.getPhotoOrg();
         imOrg.setImageBitmap(BitmapFactory.decodeByteArray(photoByte, 0, photoByte.length));
+        bt_update = new AppCompatButton(getContext());
+        bt_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null,
+                        OpenHelper.VERSION);
+                ChatArrayAdapter recyclerAdapter;
+                RecyclerView rec = getActivity().findViewById(R.id.rec_chat);
+                int perId = openHelper.findPersonByLogin(
+                        getArguments().getString("LOG")).getId();
+                Organization org = openHelper.findOrgByName(getArguments().getString("NameOrg"));
+                recyclerAdapter = new ChatArrayAdapter(getContext(),
+                        ChatFragment.this, openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId));
+                try {
+                    rec.setAdapter(recyclerAdapter);
+                    rec.scrollToPosition(openHelper.findMsgByChatId(
+                            openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId)).size() - 1);
+                }catch (Exception e){
+                    Log.e("UPDATE_ADAPTER", e.getMessage());
+                }
 
-
+            }
+        });
+        MyChatThread myChatThread = new MyChatThread(getContext());
+        myChatThread.start();
         imOrg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                myChatThread.changeBool();
                 Bundle bundleForFullDesc = new Bundle();
                 bundleForFullDesc.putString("LOG", getArguments().getString("LOG"));
                 bundleForFullDesc.putString("NameOrg", getArguments().getString("NameOrg"));
@@ -84,12 +114,12 @@ public class ChatFragment extends Fragment {
                             R.id.action_chatFragment_to_fullInfoFragment, bundleForFullDesc);
                 });
                 imOrg.performClick();
-
             }
-        });
+            });
         bt_arrow_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                myChatThread.changeBool();
                 Bundle bundleLog = new Bundle();
                 bundleLog.putString("LOG", getArguments().getString("LOG"));
                 bt_arrow_back.setOnClickListener((view1) -> {
@@ -126,7 +156,7 @@ public class ChatFragment extends Fragment {
                         new AppApiVolley(getContext()).addMessage(
                                 openHelper.findLastMessageByChatId(
                                         openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId)));
-                        Log.e("CHAT MESSAGE" , openHelper.findMsgByChatId(
+                        Log.e("CHAT MESSAGE", openHelper.findMsgByChatId(
                                 openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId)).toString());
                         ChatArrayAdapter recyclerAdapter1 = new ChatArrayAdapter(getContext(),
                                 ChatFragment.this, openHelper.
@@ -144,7 +174,44 @@ public class ChatFragment extends Fragment {
 
             }
         });
-
     }
 
-}
+
+        class MyChatThread extends Thread {
+            private Context context;
+            private OpenHelper openHelper;
+            private boolean b = true;
+
+            public MyChatThread(Context context) {
+                this.context = context;
+                openHelper = new OpenHelper(context, "OpenHelder", null, OpenHelper.VERSION);
+            }
+
+            @Override
+            public void run() {
+                try {
+                    while (b) {
+                        new AppApiVolley(context).checkNewMsg();
+                        try {
+                            sleep(3 * 1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        requireActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                bt_update.performClick();
+                            }
+                        });
+                    }
+                }catch (Exception e){
+                    Log.e("CHAT_THREAD", e.getMessage());
+                }
+            }
+
+            public void changeBool() {
+                b = !b;
+            }
+        }
+    }
+

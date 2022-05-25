@@ -31,6 +31,7 @@ import com.example.mainproject.domain.Person;
 import com.example.mainproject.domain.mapper.ChatMapper;
 import com.example.mainproject.domain.mapper.MessageMapper;
 import com.example.mainproject.domain.mapper.OrganizationMapper;
+import com.example.mainproject.fragment.ChatFragment;
 import com.example.mainproject.fragment.ListFragment;
 import com.example.mainproject.fragment.MainFragment;
 import com.google.protobuf.Api;
@@ -44,14 +45,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class AppApiVolley implements  AppApi {
 
 
 
     private final Context context;
-    public static final String BASE_URL = "http://192.168.1.33:8081";
+    public static final String BASE_URL = "http://192.168.1.35:8081";
     private com.android.volley.Response.ErrorListener errorListener;
+
 
 
     public AppApiVolley(Context context) {
@@ -209,7 +212,6 @@ public class AppApiVolley implements  AppApi {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        fillChats();
                         Log.d("API_TEST_ADD_CHAT", response);
                     }
                 },
@@ -277,6 +279,26 @@ public class AppApiVolley implements  AppApi {
                 errorListener);
         referenceQueue.add(jsonArrayRequest);
     }
+
+    @Override
+    public void checkNewMsg() {
+        String url = BASE_URL + "/message/size";
+        RequestQueue referenceQueue = Volley.newRequestQueue(context);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET,
+                url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                int size = Integer.parseInt(response);
+                OpenHelper openHelper = new OpenHelper(context, "OpenHelder",
+                        null, OpenHelper.VERSION);
+                if(openHelper.findAllMsg().size() != size){
+                    fillMsg();
+                }
+            }
+        }, errorListener);
+        referenceQueue.add(stringRequest);
+    }
+
     @Override
     public void fillMsg() {
         String url = BASE_URL + "/message";
