@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -168,15 +169,19 @@ public class FullInfoFragment extends Fragment {
                     bt_prev.performClick();
                 }
                 else if(getArguments().getString("PrevFragment").equals("map")){
-                    Bundle bundle = new Bundle();
-                    bundle.putString("LOG", getArguments().getString("LOG"));
-                    bundle.putString("NameOrg", getArguments().getString("NameOrg"));
-                    bt_prev.setOnClickListener((view1) -> {
-                        NavHostFragment.
-                                findNavController(FullInfoFragment.this).navigate(
-                                R.id.action_fullInfoFragment_to_mapFragment, bundle);
-                    });
-                    bt_prev.performClick();
+                    try {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("LOG", getArguments().getString("LOG"));
+                        bundle.putString("NameOrg", getArguments().getString("NameOrg"));
+                        bt_prev.setOnClickListener((view1) -> {
+                            NavHostFragment.
+                                    findNavController(FullInfoFragment.this).navigate(
+                                    R.id.action_fullInfoFragment_to_mapFragment, bundle);
+                        });
+                        bt_prev.performClick();
+                    }catch (Exception e){
+                        Log.d("FavFragment", "Получение разрешения на определение геолокации");
+                    }
                 }
                 else{
                     Bundle bundle = new Bundle();

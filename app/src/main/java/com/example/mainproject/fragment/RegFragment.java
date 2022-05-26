@@ -139,6 +139,22 @@ public class RegFragment extends Fragment {
                         || password2.isEmpty()) {
                    checking.setText("Не все поля заполнены");
                 }
+                else if (name.contains("!") || name.contains("#") || name.contains("+") ||
+                        name.contains("=") || name.contains("'")|| name.contains(",")
+                        || age == 0
+                        || data.contains("!") || data.contains("#") || data.contains("+") ||
+                        data.contains("=") || data.contains("'")|| data.contains(",")
+                        || dateOfBirth.contains("!") || dateOfBirth.contains("#") ||
+                        dateOfBirth.contains("+") ||
+                        dateOfBirth.contains("=") || dateOfBirth.contains("'")|| dateOfBirth.contains(",")
+                        || city.contains("!") || city.contains("#") ||
+                        city.contains("+") ||
+                        city.contains("=") || city.contains("'")|| city.contains(",")
+                        || password1.contains("!") || password1.contains("#") ||
+                        password1.contains("+") ||
+                        password1.contains("=") || password1.contains("'")|| password1.contains(",")) {
+                    checking.setText("Нельзя использовать дополнительные символы");
+                }
                 else if (!password1.equals(password2)) {
                         checking.setText("Пароли не совпадают");
                     } else if (check == 0){

@@ -69,7 +69,11 @@ public class MapFragment extends Fragment  {
                             firstLatLng, 10
                     ));
                 }
-                googleMap.setMyLocationEnabled(true);
+                try {
+                    googleMap.setMyLocationEnabled(true);
+                }catch (Exception e){
+                    Log.e("CannotSetMyLocation", e.getMessage());
+                }
                 OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null,
                         OpenHelper.VERSION);
                 ArrayList<Organization> arrayOrgList = openHelper.findAllOrganizations();

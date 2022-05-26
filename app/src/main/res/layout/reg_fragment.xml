@@ -212,6 +212,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text=" "
+            android:layout_margin="20dp"
             android:textColor="@color/red" />
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bt_reg_fr_reg"

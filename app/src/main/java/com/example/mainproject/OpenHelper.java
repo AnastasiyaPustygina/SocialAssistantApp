@@ -421,6 +421,57 @@ public class OpenHelper extends SQLiteOpenHelper {
         return new Organization(100, null, null,null,
                 null, null, null);
     }
+
+    public List<Organization> findOrgByCity(String city){
+        SQLiteDatabase db = getReadableDatabase();
+        ArrayList<Organization> org_array = new ArrayList<>();
+        Cursor cur = db.query(TABLE_ORG_NAME, null, null,
+                null, null, null, null);
+        cur.moveToFirst();
+        if(!cur.isAfterLast()){
+            do{
+                int id = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_ORGANIZATION_ID));
+                String name = cur.getString(cur.getColumnIndexOrThrow(COLUMN_ORGNAME));
+                String type = cur.getString(cur.getColumnIndexOrThrow(COLUMN_TYPE));
+                String desc = cur.getString(cur.getColumnIndexOrThrow(COLUMN_DESCRIPTION));
+                String address = cur.getString(cur.getColumnIndexOrThrow(COLUMN_ADDRESS));
+                String needs = cur.getString(cur.getColumnIndexOrThrow(COLUMN_NEEDS));
+                String link = cur.getString(cur.getColumnIndexOrThrow(COLUMN_LINKWEB));
+                String[] arr_address1 = address.split(" ");
+                String[] arr_address2 = address.split(",");
+
+                if(city.equals(arr_address1[0]) || city.equals(arr_address1[1]) ||
+                        city.equals(arr_address2[0]) || city.equals(arr_address2[1])) {
+                    org_array.add(new Organization(id, name, type, desc, address, needs, link));
+                }
+            }while (cur.moveToNext());
+        }
+        return org_array;
+    }
+    public List<Organization> findOrgByType(String typeOrg){
+        SQLiteDatabase db = getReadableDatabase();
+        ArrayList<Organization> org_array = new ArrayList<>();
+        Cursor cur = db.query(TABLE_ORG_NAME, null, null,
+                null, null, null, null);
+        cur.moveToFirst();
+        if(!cur.isAfterLast()){
+            do{
+                int id = cur.getInt(cur.getColumnIndexOrThrow(COLUMN_ORGANIZATION_ID));
+                String name = cur.getString(cur.getColumnIndexOrThrow(COLUMN_ORGNAME));
+                String type = cur.getString(cur.getColumnIndexOrThrow(COLUMN_TYPE));
+                String desc = cur.getString(cur.getColumnIndexOrThrow(COLUMN_DESCRIPTION));
+                String address = cur.getString(cur.getColumnIndexOrThrow(COLUMN_ADDRESS));
+                String needs = cur.getString(cur.getColumnIndexOrThrow(COLUMN_NEEDS));
+                String link = cur.getString(cur.getColumnIndexOrThrow(COLUMN_LINKWEB));
+
+                if(type.equals(typeOrg)) {
+                    org_array.add(new Organization(id, name, type, desc, address, needs, link));
+                }
+            }while (cur.moveToNext());
+        }
+        return org_array;
+    }
+
     public Organization findOrgByAddress(String addr){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cur = db.query(TABLE_ORG_NAME, null, null,

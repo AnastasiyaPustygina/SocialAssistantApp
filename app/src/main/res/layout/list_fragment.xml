@@ -34,9 +34,12 @@
             android:textSize="15sp"
             />
         <Spinner
+            android:id="@+id/sp_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="50dp"
+            android:entries="@array/filters"
+            android:gravity="center"
             android:backgroundTint="@color/for_first_ava"
             android:layout_gravity="right" />
 

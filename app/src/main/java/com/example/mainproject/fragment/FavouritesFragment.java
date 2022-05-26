@@ -2,6 +2,7 @@ package com.example.mainproject.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,7 @@ public class FavouritesFragment extends Fragment {
         OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
         String[] arr = openHelper.findFavOrgByLogin(getArguments().getString("LOG")).split(" ");
         for (int i = 1; i < arr.length; i++) {
-            if(openHelper.findOrgByName(arr[i]).getName() != null)
+            if (openHelper.findOrgByName(arr[i]).getName() != null)
                 arListOrg.add(openHelper.findOrgByName(arr[i]));
         }
         RecyclerView recyclerView = getActivity().findViewById(R.id.rec_fav);
@@ -81,17 +82,21 @@ public class FavouritesFragment extends Fragment {
                 btChat.performClick();
             }
         });
-        AppCompatButton btMap = getActivity().findViewById(R.id.bt_fav_map);
-        btMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btMap.setOnClickListener((view1) -> {
-                    NavHostFragment.
-                            findNavController(FavouritesFragment.this).navigate(
-                            R.id.action_favouritesFragment_to_mapFragment, bundleLog);
-                });
-                btMap.performClick();
-            }
-        });
+        try {
+            AppCompatButton btMap = getActivity().findViewById(R.id.bt_fav_map);
+            btMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btMap.setOnClickListener((view1) -> {
+                        NavHostFragment.
+                                findNavController(FavouritesFragment.this).navigate(
+                                R.id.action_favouritesFragment_to_mapFragment, bundleLog);
+                    });
+                    btMap.performClick();
+                }
+            });
+        }catch (Exception e){
+            Log.d("FavFragment", "Получение разрешения на определение геолокации");
         }
+    }
     }

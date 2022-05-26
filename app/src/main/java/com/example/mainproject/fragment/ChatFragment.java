@@ -1,11 +1,14 @@
 package com.example.mainproject.fragment;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.BitmapFactory;
-import android.graphics.LightingColorFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -15,7 +18,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
@@ -23,6 +31,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mainproject.BuildConfig;
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.R;
 import com.example.mainproject.adapter.ChatArrayAdapter;
@@ -31,10 +40,9 @@ import com.example.mainproject.domain.Organization;
 import com.example.mainproject.rest.AppApiVolley;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
 
 public class ChatFragment extends Fragment {
 
@@ -43,7 +51,30 @@ public class ChatFragment extends Fragment {
     private EditText et_msg;
     private ChatArrayAdapter recyclerAdapter;
     private AppCompatButton bt_update;
+    private ActivityResultLauncher<Intent> launcher;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+//        launcher = registerForActivityResult(
+//                new ActivityResultContracts.StartActivityForResult(),
+//                new ActivityResultCallback<ActivityResult>() {
+//                    @Override
+//                    public void onActivityResult(ActivityResult result) {
+//                        if(result.getResultCode() == Activity.RESULT_OK){
+//                            ArrayList<String> words = result.getData().
+//                                    getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+//                            StringBuilder res = new StringBuilder();
+//                            for (int i = 0; i < words.size() - 1; i++) {
+//                                res.append(words.get(i)).append(" ");
+//                            }
+//                            res.append(words.get(words.size() - 1));
+//                            et_msg.setText(res.toString());
+//                        }
+//                    }
+//                });
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.chat_fragment, container, false);
@@ -98,6 +129,7 @@ public class ChatFragment extends Fragment {
 
             }
         });
+
         MyChatThread myChatThread = new MyChatThread(getContext());
         myChatThread.start();
         imOrg.setOnClickListener(new View.OnClickListener() {
@@ -128,6 +160,12 @@ public class ChatFragment extends Fragment {
                             R.id.action_chatFragment_to_listOfChatsFragment, bundleLog);
                 });
                 bt_arrow_back.performClick();
+            }
+        });
+        ivMicro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startSpeak();
             }
         });
 
@@ -212,6 +250,22 @@ public class ChatFragment extends Fragment {
             public void changeBool() {
                 b = !b;
             }
+        }
+        public void startSpeak(){
+//        try {
+////            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+////            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+////                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+////            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "");
+////            launcher.launch(intent);
+////        }catch(ActivityNotFoundException e){
+////            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+////                    Uri.parse("market://details?id="
+////                    + BuildConfig.APPLICATION_ID));
+////            startActivity(browserIntent);
+////
+////
+////            }
         }
     }
 

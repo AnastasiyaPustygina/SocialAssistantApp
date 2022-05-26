@@ -2,6 +2,7 @@ package com.example.mainproject.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,16 +71,20 @@ public class ListOfChatsFragment extends Fragment {
                 btList.performClick();
             }
         });
-        btMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btMap.setOnClickListener((view1) -> {
-                    NavHostFragment.
-                            findNavController(ListOfChatsFragment.this).navigate(
-                            R.id.action_listOfChatsFragment_to_mapFragment, bundleLog);
-                });
-                btMap.performClick();
-            }
-        });
+        try {
+            btMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btMap.setOnClickListener((view1) -> {
+                        NavHostFragment.
+                                findNavController(ListOfChatsFragment.this).navigate(
+                                R.id.action_listOfChatsFragment_to_mapFragment, bundleLog);
+                    });
+                    btMap.performClick();
+                }
+            });
+        }catch (Exception e){
+            Log.d("FavFragment", "Получение разрешения на определение геолокации");
+        }
     }
 }

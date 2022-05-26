@@ -10,13 +10,10 @@
     <string name="ed_pas1"><font size="15">Введите пароль</font></string>
     <string name="ed_pas2"><font size="15">Повторно введите пароль</font></string>
     <string-array name="filters">
-        <item>По городу</item>
-        <item>По типу</item>
-        <item>По новизне</item>
-        <item>по близости</item>
-    </string-array>
-    <string-array name="fullInfo">
-        <item>Подробнее</item>
+        <item>В моём городе</item>
+        <item>Детские дома</item>
+        <item>Дома престарелых</item>
+        <item>Хосписы</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->

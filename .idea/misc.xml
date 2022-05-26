@@ -17,7 +17,9 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable/logo.xml" value="0.1" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable/microphone.xml" value="0.1" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable/my_msg.xml" value="0.106" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable/paper_clip.xml" value="0.1" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable/three_points.xml" value="0.106" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/drawable/while_loading.xml" value="0.12" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/activity_main.xml" value="0.14" />
@@ -27,9 +29,9 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/for_spinner.xml" value="0.22" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/fragment_map.xml" value="0.16" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/full_info_fragment.xml" value="0.18" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/list_fragment.xml" value="0.16" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/list_fragment.xml" value="0.13" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/list_of_chats_fragment.xml" value="0.15" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/main_fragment.xml" value="0.2" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/main_fragment.xml" value="0.16" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/msg_my.xml" value="0.18" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/msg_other.xml" value="0.1" />
         <entry key="..\:/Users/user/AndroidStudioProjects/MainProject/app/src/main/res/layout/reg_fragment.xml" value="0.1" />

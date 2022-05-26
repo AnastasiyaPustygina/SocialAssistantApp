@@ -6,6 +6,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +21,7 @@ import com.example.mainproject.OpenHelper;
 import com.example.mainproject.adapter.OrgArrayAdapter;
 import com.example.mainproject.R;
 import com.example.mainproject.domain.Organization;
+import com.example.mainproject.domain.Person;
 import com.example.mainproject.rest.AppApiVolley;
 
 import java.util.ArrayList;
@@ -26,6 +30,7 @@ public class ListFragment extends Fragment {
     private AppCompatButton bt_prof, bt_fav;
     private OrgArrayAdapter orgArrayAdapter;
     private RecyclerView recyclerView;
+    private Spinner spinner;
 
     @Nullable
     @Override
@@ -38,13 +43,48 @@ public class ListFragment extends Fragment {
         super.onStart();
         bt_prof = getActivity().findViewById(R.id.bt_list_prof);
         bt_fav = getActivity().findViewById(R.id.bt_list_fav);
+        spinner = getActivity().findViewById(R.id.sp_list);
         OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
-        ArrayList<Organization> arListOrg = openHelper.findAllOrganizations();
+        Person person = openHelper.findPersonByLogin(getArguments().getString("LOG"));
+
+        final ArrayList<Organization>[] arListOrg = new ArrayList[]{new ArrayList<>()};
+        arListOrg[0] = openHelper.findAllOrganizations();
         recyclerView = getActivity().findViewById(R.id.rec_list);
-        orgArrayAdapter =
-                new OrgArrayAdapter(getContext(), arListOrg, getArguments().getString("LOG"),
-                        this);
-        recyclerView.setAdapter(orgArrayAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i == 0){
+                    arListOrg[0] =
+                            (ArrayList<Organization>) openHelper.findOrgByCity(person.getCity());
+
+                }
+                if(i == 1){
+                    arListOrg[0] =
+                            (ArrayList<Organization>) openHelper.findOrgByType("Детский дом");
+                }
+                if(i == 2){
+                    arListOrg[0] =
+                            (ArrayList<Organization>) openHelper.findOrgByType("Дом престарелых");
+                }
+                if(i == 3){
+                    arListOrg[0] =
+                            (ArrayList<Organization>) openHelper.findOrgByType("Хосписы");
+                }
+                orgArrayAdapter =
+                        new OrgArrayAdapter(getContext(), arListOrg[0], getArguments().getString("LOG"),
+                                ListFragment.this);
+                recyclerView.setAdapter(orgArrayAdapter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                orgArrayAdapter =
+                        new OrgArrayAdapter(getContext(), arListOrg[0], getArguments().getString("LOG"),
+                                ListFragment.this);
+                recyclerView.setAdapter(orgArrayAdapter);
+            }
+        });
+
         Bundle bundleLog = new Bundle();
         bundleLog.putString("LOG", getArguments().getString("LOG"));
         bt_prof.setOnClickListener(new View.OnClickListener() {
@@ -83,17 +123,20 @@ public class ListFragment extends Fragment {
             }
         });
         AppCompatButton btMap = getActivity().findViewById(R.id.bt_list_map);
-        btMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btMap.setOnClickListener((view1) -> {
-                    NavHostFragment.
-                            findNavController(ListFragment.this).navigate(
-                            R.id.action_listFragment_to_mapFragment, bundleLog);
-                });
-                btMap.performClick();
-            }
-        });
-
+        try {
+            btMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btMap.setOnClickListener((view1) -> {
+                        NavHostFragment.
+                                findNavController(ListFragment.this).navigate(
+                                R.id.action_listFragment_to_mapFragment, bundleLog);
+                    });
+                    btMap.performClick();
+                }
+            });
+        }catch (Exception e){
+            Log.d("FavFragment", "Получение разрешения на определение геолокации");
+        }
     }
 }

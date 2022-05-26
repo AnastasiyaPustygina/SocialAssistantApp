@@ -197,6 +197,7 @@ public class MainFragment extends Fragment {
                 bt_chat.performClick();
             }
         });
+        try{
         bt_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -208,7 +209,9 @@ public class MainFragment extends Fragment {
                 bt_map.performClick();
             }
         });
-
+        }catch (Exception e){
+            Log.d("FavFragment", "Получение разрешения на определение геолокации");
+        }
     }
 
 }
