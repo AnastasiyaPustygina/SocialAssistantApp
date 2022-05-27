@@ -97,7 +97,6 @@ public class AppApiVolley implements  AppApi {
                                             organization.getType(),
                                             organization.getDescription(), organization.getAddress(),
                                             organization.getNeeds(), organization.getLinkToWebsite()));
-                                    Log.e("API_TEST_FILL_ORG", organization.getName());
                                 }
                                 else{
                                     openHelper.changeDescByLog(organization.getName(),
@@ -106,7 +105,7 @@ public class AppApiVolley implements  AppApi {
                                             organization.getNeeds());
                                 }
                             }
-                            Log.e("API_TEST_FILL_ORG_ALL", openHelper.findAllOrganizations().toString());
+
                         }catch (JSONException e) {
                             Log.e("API_TEST_FILL_ORG", e.getMessage());
                         }
@@ -154,8 +153,6 @@ public class AppApiVolley implements  AppApi {
     public void updatePerson(int id, String telephone, String email, String name, byte[] photoPer,
                                    int age, String dateOfBirth, String city) {
         String url = BASE_URL + "/person/" + id;
-        Log.e("UPDATE_PER", id + " " + name + " " + telephone + " "
-                + email + " " + age + " " + dateOfBirth + " " + city);
         RequestQueue referenceQueue = Volley.newRequestQueue(context);
         StringRequest stringRequest = new StringRequest(Request.Method.PUT,
                 url,
@@ -163,13 +160,7 @@ public class AppApiVolley implements  AppApi {
                     @Override
                     public void onResponse(String response) {
 
-                        Log.e("UPDATE_PER_PHOTO", Arrays.toString(photoPer));
-                        SharedPreferences sharedPreferences = MainFragment.sharedPreferences;
-                        String photo = sharedPreferences.getString("per_photo" + name,
-                                "notPerPhotoInPref");
-
-
-                        Log.e("AFTER_UPDATE_PER_PHOTO", photo);
+                        Log.d("API_TEST", "UPDATE_PERSON");
                     }
                 },
                 errorListener){
@@ -205,6 +196,10 @@ public class AppApiVolley implements  AppApi {
 
     @Override
     public void addChat(Chat chat) {
+        OpenHelper openHelper = new OpenHelper(context, "OpenHelder", null, OpenHelper.VERSION);
+
+        if(openHelper.findChatIdByOrgIdAndPerId(chat.getOrganization().getId(),
+                chat.getPerson().getId()) == -100) {
         String url = BASE_URL + "/chat";
         RequestQueue referenceQueue = Volley.newRequestQueue(context);
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
@@ -235,9 +230,6 @@ public class AppApiVolley implements  AppApi {
                         chat.getOrganization().getAddress() + "!" + chat.getOrganization().getNeeds() +
                         "!" + chat.getOrganization().getLinkToWebsite();
 
-                Log.e("ORGANIZATION_STR", orgStr);
-                Log.e("PERSON_STR", personStr);
-                Log.e("CHAT_ID", chat.getId() + "");
 
                 params.put("id", chat.getId() + "");
                 params.put("strPerson", personStr);
@@ -245,8 +237,8 @@ public class AppApiVolley implements  AppApi {
                 return params;
             }
         };
-        Log.e("INSERT CHAT", chat.toString());
-        referenceQueue.add(stringRequest);
+            referenceQueue.add(stringRequest);
+        }
     }
 
     @Override
@@ -273,7 +265,7 @@ public class AppApiVolley implements  AppApi {
                         }catch (JSONException e) {
                             Log.e("API_TEST_FILL_CHAT", e.getMessage());
                         }
-                        if(chat != null) Log.e("FILL CHAT", chat.toString() + "");
+                        if(chat != null) Log.d("FILL CHAT", chat.toString() + "");
                     }
                 },
                 errorListener);
@@ -291,8 +283,12 @@ public class AppApiVolley implements  AppApi {
                 int size = Integer.parseInt(response);
                 OpenHelper openHelper = new OpenHelper(context, "OpenHelder",
                         null, OpenHelper.VERSION);
-                if(openHelper.findAllMsg().size() != size){
+                try{
+                if(openHelper.findAllMsg().size() != size) {
                     fillMsg();
+                }
+                }catch (Exception e){
+                    Log.e("AppApiCheckNew", e.getMessage());
                 }
             }
         }, errorListener);
@@ -313,65 +309,21 @@ public class AppApiVolley implements  AppApi {
                         OpenHelper openHelper = new OpenHelper(context, "OpenHelder",
                                 null, OpenHelper.VERSION);
                         openHelper.deleteAllMessage();
-                        Log.e("API_TEST_FILL_MSG", response.length() + "");
                         try {
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject jsonObject = response.getJSONObject(i);
                                 Message message = MessageMapper.messageFromJson(jsonObject, context);
                                 openHelper.insertMsg(message);
-                                Log.e("FILL MSG", message.toString());
 
                             }
                         }catch (JSONException e) {
                             Log.e("API_TEST", e.getMessage());
-                        }
-                        try {
-                            Log.e("AFTER FILL MSG", openHelper.findAllMsg().toString());
-                        }catch (Exception e){
-                            Log.e("AFTER FILL MSG", e.getMessage());
                         }
                     }
                 },
                 errorListener);
         referenceQueue.add(jsonArrayRequest);
     }
-//    @Override
-//    public void fillMessageByChatID(int chat_id) {
-//        String url = BASE_URL + "/chat/" + chat_id + "/message";
-//        RequestQueue referenceQueue = Volley.newRequestQueue(context);
-//        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
-//                Request.Method.GET,
-//                url,
-//                null,
-//                new Response.Listener<JSONArray>() {
-//                    @Override
-//                    public void onResponse(JSONArray response) {
-//                        try {
-//                        OpenHelper openHelper = new OpenHelper(context,
-//                                "OpenHelder", null, OpenHelper.VERSION);
-//                            openHelper.deleteMsgByChatId(chat_id);
-//
-//                        Message message = null;
-//                        Log.e("API_TEST_MSG", response.length() + "");
-//                        try {
-//                            for (int i = 0; i < response.length(); i++) {
-//                                JSONObject jsonObject = response.getJSONObject(i);
-//                                message = MessageMapper.messageFromJson(jsonObject, context);
-//                                openHelper.insertMsg(message);
-//                            }
-//
-//                        }catch (JSONException e) {
-//                            Log.e("API_TEST_FILL_MSG", e.getMessage());
-//                        }
-//                        if(message != null) Log.e("FILL MSG", message + "");
-//                        }catch (CursorIndexOutOfBoundsException e){
-//                            Log.e("No message in chat", chat_id + "");
-//                        }
-//                    }
-//                },
-//                errorListener);
-//        referenceQueue.add(jsonArrayRequest);
-//    }
 
     @Override
     public void addMessage(Message message) {
@@ -420,7 +372,6 @@ public class AppApiVolley implements  AppApi {
                 return params;
             }
         };
-        Log.e("INSERT MESSAGE", message.toString());
         referenceQueue.add(stringRequest);
     }
 }

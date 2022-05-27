@@ -1,6 +1,5 @@
 package com.example.mainproject.fragment;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,7 +23,6 @@ import com.example.mainproject.domain.Person;
 import com.example.mainproject.rest.AppApiVolley;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 
 public class RegFragment extends Fragment {
 
@@ -53,29 +51,11 @@ public class RegFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        /*OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
-        openHelper.deleteAllChat();
-        openHelper.deleteAllMessage();
-        openHelper.deleteAllOrganization();
-        Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.ic_channel);
-        Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.image_for_checking);
-        Bitmap bitmap3 = BitmapFactory.decodeResource(getResources(), R.drawable.ic_channel);
-
-        openHelper.insertOrg(new Organization( "yellowBackground", "orphan home", bitmap1,
-                "Desc", "Address", "Needs", "Link"));
-        openHelper.insertOrg(new Organization( "blueBackground", "orphan home", bitmap2,
-                "SecondDesc", "SecondAddress", "SecondNeeds",
-                "SecondLink"));
-        openHelper.insertOrg(new Organization( "Three", "orphan home", bitmap3,
-                "Desc3", "Address3", "Needs3",
-                "Link3"));*/
         edTelOrEmail = getActivity().findViewById(R.id.ed_reg_data);
         checking = getActivity().findViewById(R.id.checking);
         tv_data = getActivity().findViewById(R.id.tv_reg_data);
         EditText edName = getActivity().findViewById(R.id.ed_reg_name);
         EditText edAge = getActivity().findViewById(R.id.ed_reg_age);
-
-        EditText edData = getActivity().findViewById(R.id.ed_reg_data);
         bt_reg_fr_reg = getActivity().findViewById(R.id.bt_reg_fr_reg);
         EditText edBateOfBirth = getActivity().findViewById(R.id.ed_reg_dateOfBirth);
         EditText edCity = getActivity().findViewById(R.id.ed_reg_city);

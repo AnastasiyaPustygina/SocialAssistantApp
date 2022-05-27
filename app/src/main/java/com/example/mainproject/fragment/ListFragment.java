@@ -1,13 +1,11 @@
 package com.example.mainproject.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -22,7 +20,6 @@ import com.example.mainproject.adapter.OrgArrayAdapter;
 import com.example.mainproject.R;
 import com.example.mainproject.domain.Organization;
 import com.example.mainproject.domain.Person;
-import com.example.mainproject.rest.AppApiVolley;
 
 import java.util.ArrayList;
 
@@ -53,23 +50,27 @@ public class ListFragment extends Fragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(i == 0){
+                if(i == 1){
                     arListOrg[0] =
                             (ArrayList<Organization>) openHelper.findOrgByCity(person.getCity());
 
                 }
-                if(i == 1){
+                if(i == 2){
                     arListOrg[0] =
                             (ArrayList<Organization>) openHelper.findOrgByType("Детский дом");
                 }
-                if(i == 2){
+                if(i == 3){
                     arListOrg[0] =
                             (ArrayList<Organization>) openHelper.findOrgByType("Дом престарелых");
                 }
-                if(i == 3){
+                if(i == 4){
                     arListOrg[0] =
-                            (ArrayList<Organization>) openHelper.findOrgByType("Хосписы");
+                            (ArrayList<Organization>) openHelper.findOrgByType("Хоспис");
                 }
+                if(i == 0){
+                    arListOrg[0] = openHelper.findAllOrganizations();
+                }
+
                 orgArrayAdapter =
                         new OrgArrayAdapter(getContext(), arListOrg[0], getArguments().getString("LOG"),
                                 ListFragment.this);

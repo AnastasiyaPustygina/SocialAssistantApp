@@ -56,24 +56,6 @@ public class ChatFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        launcher = registerForActivityResult(
-//                new ActivityResultContracts.StartActivityForResult(),
-//                new ActivityResultCallback<ActivityResult>() {
-//                    @Override
-//                    public void onActivityResult(ActivityResult result) {
-//                        if(result.getResultCode() == Activity.RESULT_OK){
-//                            ArrayList<String> words = result.getData().
-//                                    getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-//                            StringBuilder res = new StringBuilder();
-//                            for (int i = 0; i < words.size() - 1; i++) {
-//                                res.append(words.get(i)).append(" ");
-//                            }
-//                            res.append(words.get(words.size() - 1));
-//                            et_msg.setText(res.toString());
-//                        }
-//                    }
-//                });
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -162,12 +144,6 @@ public class ChatFragment extends Fragment {
                 bt_arrow_back.performClick();
             }
         });
-        ivMicro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startSpeak();
-            }
-        });
 
         nameOrg.setText(org.getName());
 
@@ -189,13 +165,9 @@ public class ChatFragment extends Fragment {
                                 openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId), et_msg.getText().toString(),
                                 curTime);
                         openHelper.insertMsg(myMsg);
-                        Log.e("INDEX_AFRET INSERT", openHelper.findLastMessageByChatId(
-                                openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId)).getId() + "");
                         new AppApiVolley(getContext()).addMessage(
                                 openHelper.findLastMessageByChatId(
                                         openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId)));
-                        Log.e("CHAT MESSAGE", openHelper.findMsgByChatId(
-                                openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId)).toString());
                         ChatArrayAdapter recyclerAdapter1 = new ChatArrayAdapter(getContext(),
                                 ChatFragment.this, openHelper.
                                 findChatIdByOrgIdAndPerId(org.getId(), perId));
@@ -238,7 +210,11 @@ public class ChatFragment extends Fragment {
                         requireActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                bt_update.performClick();
+                                try {
+                                    bt_update.performClick();
+                                }catch (Exception e){
+                                    Log.e("UPDATE_ADAPTER", e.getMessage());
+                                }
                             }
                         });
                     }
@@ -250,22 +226,6 @@ public class ChatFragment extends Fragment {
             public void changeBool() {
                 b = !b;
             }
-        }
-        public void startSpeak(){
-//        try {
-////            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-////            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-////                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-////            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "");
-////            launcher.launch(intent);
-////        }catch(ActivityNotFoundException e){
-////            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-////                    Uri.parse("market://details?id="
-////                    + BuildConfig.APPLICATION_ID));
-////            startActivity(browserIntent);
-////
-////
-////            }
         }
     }
 

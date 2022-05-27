@@ -3,7 +3,6 @@ package com.example.mainproject.fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,14 +37,6 @@ public class SignInFragment extends Fragment {
         super.onStart();
        sharedPreferences = getContext().getSharedPreferences
                (APP_PREFERENCES, Context.MODE_PRIVATE);
-       OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
-       try {
-           Log.e("PEOPLE", openHelper.findAllPeople().toString());
-
-           Log.e("ORG", openHelper.findAllOrganizations().toString());
-
-       }catch (Exception ignored){}
-
        TextView checking = getActivity().findViewById(R.id.tv_check);
         ed_data = getActivity().findViewById(R.id.ed_signIn_data);
         ed_pass = getActivity().findViewById(R.id.ed_signIn_pass);

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MainProject</string>
+    <string name="app_name">Social Assistant</string>
     <string name="ed_log"><font size="15">Введите логин</font></string>
     <string name="ed_pas"><font size="15">Введите пароль</font></string>
     <string name="ed_email"><font size="13">Введите адрес электронной почты</font></string>
@@ -10,6 +10,7 @@
     <string name="ed_pas1"><font size="15">Введите пароль</font></string>
     <string name="ed_pas2"><font size="15">Повторно введите пароль</font></string>
     <string-array name="filters">
+        <item>Все</item>
         <item>В моём городе</item>
         <item>Детские дома</item>
         <item>Дома престарелых</item>

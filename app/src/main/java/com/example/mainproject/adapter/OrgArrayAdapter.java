@@ -27,7 +27,6 @@ import com.example.mainproject.fragment.MapFragment;
 import com.example.mainproject.domain.Chat;
 import com.example.mainproject.domain.Organization;
 import com.example.mainproject.domain.Person;
-import com.example.mainproject.rest.AppApi;
 import com.example.mainproject.rest.AppApiVolley;
 
 import java.util.List;
@@ -69,8 +68,7 @@ public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHo
                 holder.btIdenFav.setBackgroundResource(R.drawable.bt_fav_true);
             else holder.btIdenFav.setBackgroundResource(R.drawable.bt_fav_false);
         }catch (Exception e){
-            Log.e("findFavOrgByLogin", openHelper1.findFavOrgByLogin(nameOfPerson));
-            Log.e("organization.getName()", organization.toString());
+            Log.e("findFavOrgByLogin", e.getMessage());
 
         }
 
@@ -133,10 +131,7 @@ public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHo
                             organization.getId(), person.getId()) == 0)) {
                         chat = new Chat(
                                 openHelper1.findPersonByLogin(nameOfPerson), organization);
-                        Log.e("CHAT BEFORE INSERT", chat.toString());
                         openHelper1.insertChat(chat);
-                        Log.e("CHAT AFTER INSERT", openHelper1.findChatByPersonIdAndOrgId(
-                                openHelper1.findPersonByLogin(nameOfPerson).getId(), organization.getId()).toString());
                         new AppApiVolley(context).addChat(openHelper1.findChatByPersonIdAndOrgId(
                                 openHelper1.findPersonByLogin(nameOfPerson).getId(), organization.getId()));
                     }

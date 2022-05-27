@@ -20,6 +20,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        new MyThread().run();
     }
+    class MyThread extends Thread{
+        @Override
+        public void run() {
+            super.run();
+            new AppApiVolley(MainActivity.this).fillOrganization();
+            new AppApiVolley(MainActivity.this).fillChats();
+            new AppApiVolley(MainActivity.this).fillMsg();
 
+        }
+    }
 }

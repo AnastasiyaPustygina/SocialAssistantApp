@@ -80,7 +80,7 @@
                         android:text="имя"
                         android:layout_marginBottom="30dp"
                         android:textColor="@color/black"
-                        android:textSize="18dp"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>

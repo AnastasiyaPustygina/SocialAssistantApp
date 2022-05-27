@@ -1,26 +1,9 @@
 package com.example.mainproject.domain;
 
-import android.app.Application;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-
-import com.example.mainproject.MainActivity;
-import com.example.mainproject.R;
-import com.example.mainproject.fragment.MainFragment;
-import com.example.mainproject.fragment.RegFragment;
 import com.example.mainproject.fragment.SignInFragment;
-import com.google.rpc.context.AttributeContext;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

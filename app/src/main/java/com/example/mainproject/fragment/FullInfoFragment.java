@@ -43,8 +43,6 @@ public class FullInfoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.full_info_fragment, container, false);
     }
-//В BUNDLE ДОЛЖНО ПРИЙТИ ЗНАЧЕНИЕ ИМЕНИ ОРГАНИЗАЦИИ ПОД КЛЮЧОМ "NameOrg", ФРАГМЕНТ С КЛЮЧОМ "PrevFragment"
-// И ИМЯ ЧЕЛОВЕКА С КЛЮЧОМ "LOG"
 
     @Override
     public void onStart() {

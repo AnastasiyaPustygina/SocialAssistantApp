@@ -21,7 +21,6 @@ public interface AppApi {
 
     void checkNewMsg();
 
-//    void fillMessageByChatID(int chat_id);
     void fillMsg();
     void addMessage(Message message);
     void updatePerson(int id, String telephone, String email, String name, byte[] photoPer,

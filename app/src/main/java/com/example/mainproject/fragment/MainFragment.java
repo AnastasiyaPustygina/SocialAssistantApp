@@ -78,7 +78,6 @@ public class MainFragment extends Fragment {
                         }
 
 
-                        Log.e("BEFORE_CHANGE_PHOTO", Arrays.toString(photoPer));
 
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         StringBuilder stringBuilder = new StringBuilder();
@@ -90,9 +89,6 @@ public class MainFragment extends Fragment {
 
                         editor.putString("per_photo" + person.getName(), stringBuilder.toString());
                         editor.commit();
-
-                        Log.e("AFTER_CHANGE_PHOTO", sharedPreferences.getString
-                                ("per_photo" + person.getName(),"noPrefPhoto"));
 
                         new AppApiVolley(getContext()).updatePerson(
                                 person.getId(), person.getTelephone(), person.getEmail(),
@@ -124,16 +120,6 @@ public class MainFragment extends Fragment {
 
         OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder",
                 null, OpenHelper.VERSION);
-        try {
-            Log.e("MSG", openHelper.findAllMsg().toString());
-        }catch (Exception e){
-            Log.e("MSG", e.getMessage());
-        }
-        try{
-        Log.e("CHATS", openHelper.findAllChats().toString());
-    }catch (Exception e){
-        Log.e("Chats", e.getMessage());
-    }
         Person client = openHelper.findPersonByLogin(nameVal);
         try {
             iv_ava.setImageBitmap(BitmapFactory.decodeByteArray(
