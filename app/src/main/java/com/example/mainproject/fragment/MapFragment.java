@@ -20,7 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.mainproject.OpenHelper;
-import com.example.mainproject.R;
+import com.example.android.multidex.mainproject.R;
 import com.example.mainproject.domain.Organization;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;

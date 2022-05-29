@@ -16,7 +16,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mainproject.adapter.ChatListArrayAdapter;
-import com.example.mainproject.R;
+import com.example.android.multidex.mainproject.R;
 import com.example.mainproject.rest.AppApiVolley;
 
 public class ListOfChatsFragment extends Fragment {

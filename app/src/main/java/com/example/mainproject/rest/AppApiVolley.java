@@ -23,7 +23,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mainproject.MainActivity;
 import com.example.mainproject.OpenHelper;
-import com.example.mainproject.R;
+import com.example.android.multidex.mainproject.R;
 import com.example.mainproject.domain.Chat;
 import com.example.mainproject.domain.Message;
 import com.example.mainproject.domain.Organization;

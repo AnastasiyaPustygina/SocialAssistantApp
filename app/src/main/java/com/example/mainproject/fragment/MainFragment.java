@@ -22,7 +22,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import com.example.mainproject.OpenHelper;
-import com.example.mainproject.R;
+import com.example.android.multidex.mainproject.R;
 import com.example.mainproject.domain.Person;
 import com.example.mainproject.rest.AppApiVolley;
 import java.io.ByteArrayOutputStream;

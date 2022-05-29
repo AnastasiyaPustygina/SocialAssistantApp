@@ -17,7 +17,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mainproject.OpenHelper;
-import com.example.mainproject.R;
+import com.example.android.multidex.mainproject.R;
 import com.example.mainproject.domain.Chat;
 import com.example.mainproject.fragment.ListOfChatsFragment;
 import com.example.mainproject.domain.Organization;

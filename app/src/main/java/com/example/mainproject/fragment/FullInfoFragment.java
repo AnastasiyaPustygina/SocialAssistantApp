@@ -21,7 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.mainproject.OpenHelper;
-import com.example.mainproject.R;
+import com.example.android.multidex.mainproject.R;
 import com.example.mainproject.domain.Chat;
 import com.example.mainproject.domain.Organization;
 import com.example.mainproject.rest.AppApiVolley;

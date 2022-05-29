@@ -10,8 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.android.multidex.mainproject.R;
 import com.example.mainproject.OpenHelper;
-import com.example.mainproject.R;
 import com.example.mainproject.fragment.ChatFragment;
 import com.example.mainproject.domain.Message;
 

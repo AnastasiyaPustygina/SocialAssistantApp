@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mainproject.OpenHelper;
 import com.example.mainproject.adapter.OrgArrayAdapter;
-import com.example.mainproject.R;
+import com.example.android.multidex.mainproject.R;
 import com.example.mainproject.domain.Organization;
 import com.example.mainproject.domain.Person;
 
@@ -44,7 +44,7 @@ public class ListFragment extends Fragment {
         OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
         Person person = openHelper.findPersonByLogin(getArguments().getString("LOG"));
 
-        final ArrayList<Organization>[] arListOrg = new ArrayList[]{new ArrayList<>()};
+        ArrayList<Organization>[] arListOrg = new ArrayList[]{new ArrayList<>()};
         arListOrg[0] = openHelper.findAllOrganizations();
         recyclerView = getActivity().findViewById(R.id.rec_list);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

@@ -30,10 +30,8 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.mainproject.BuildConfig;
 import com.example.mainproject.OpenHelper;
-import com.example.mainproject.R;
+import com.example.android.multidex.mainproject.R;
 import com.example.mainproject.adapter.ChatArrayAdapter;
 import com.example.mainproject.domain.Message;
 import com.example.mainproject.domain.Organization;

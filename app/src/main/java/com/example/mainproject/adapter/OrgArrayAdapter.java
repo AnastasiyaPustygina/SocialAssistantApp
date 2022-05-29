@@ -20,7 +20,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mainproject.OpenHelper;
-import com.example.mainproject.R;
+import com.example.android.multidex.mainproject.R;
 import com.example.mainproject.fragment.FavouritesFragment;
 import com.example.mainproject.fragment.ListFragment;
 import com.example.mainproject.fragment.MapFragment;

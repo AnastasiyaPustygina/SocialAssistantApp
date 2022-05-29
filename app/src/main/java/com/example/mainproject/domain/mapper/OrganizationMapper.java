@@ -1,11 +1,6 @@
 package com.example.mainproject.domain.mapper;
 
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import com.example.mainproject.R;
 import com.example.mainproject.domain.Organization;
 import com.example.mainproject.fragment.SignInFragment;
 
@@ -19,19 +14,6 @@ public class OrganizationMapper {
     public static Organization organizationFromJson(JSONObject jsonObject) {
         Organization organization = null;
         try {
-//            List<String> stringArrayList = Arrays.asList(
-//                    jsonObject.getString("organizationPhoto").split(" "));
-//            byte[] byteArray = new byte[stringArrayList.size()];
-//            Bitmap bitmap = null;
-//
-//            for (int i = 0; i < stringArrayList.size(); i++) {
-//                try {
-//                    byteArray[i] = Byte.valueOf(stringArrayList.get(i));
-//                }catch (Exception e){
-//                    bitmap = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.ava);
-//                }
-//            }
-//            if(bitmap == null) bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
                 SharedPreferences sharedPreferences = SignInFragment.sharedPreferences;
                 SharedPreferences.Editor editor = sharedPreferences.edit();
