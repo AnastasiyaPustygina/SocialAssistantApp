@@ -44,35 +44,34 @@ public class ListFragment extends Fragment {
         OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
         Person person = openHelper.findPersonByLogin(getArguments().getString("LOG"));
 
-        ArrayList<Organization>[] arListOrg = new ArrayList[]{new ArrayList<>()};
-        arListOrg[0] = openHelper.findAllOrganizations();
         recyclerView = getActivity().findViewById(R.id.rec_list);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                ArrayList<Organization> arListOrg = new ArrayList<Organization>();
                 if(i == 1){
-                    arListOrg[0] =
+                    arListOrg =
                             (ArrayList<Organization>) openHelper.findOrgByCity(person.getCity());
 
                 }
                 if(i == 2){
-                    arListOrg[0] =
+                    arListOrg =
                             (ArrayList<Organization>) openHelper.findOrgByType("Детский дом");
                 }
                 if(i == 3){
-                    arListOrg[0] =
+                    arListOrg =
                             (ArrayList<Organization>) openHelper.findOrgByType("Дом престарелых");
                 }
                 if(i == 4){
-                    arListOrg[0] =
+                    arListOrg =
                             (ArrayList<Organization>) openHelper.findOrgByType("Хоспис");
                 }
                 if(i == 0){
-                    arListOrg[0] = openHelper.findAllOrganizations();
+                    arListOrg = openHelper.findAllOrganizations();
                 }
 
                 orgArrayAdapter =
-                        new OrgArrayAdapter(getContext(), arListOrg[0], getArguments().getString("LOG"),
+                        new OrgArrayAdapter(getContext(), arListOrg, getArguments().getString("LOG"),
                                 ListFragment.this);
                 recyclerView.setAdapter(orgArrayAdapter);
             }
@@ -80,7 +79,7 @@ public class ListFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
                 orgArrayAdapter =
-                        new OrgArrayAdapter(getContext(), arListOrg[0], getArguments().getString("LOG"),
+                        new OrgArrayAdapter(getContext(), openHelper.findAllOrganizations(), getArguments().getString("LOG"),
                                 ListFragment.this);
                 recyclerView.setAdapter(orgArrayAdapter);
             }

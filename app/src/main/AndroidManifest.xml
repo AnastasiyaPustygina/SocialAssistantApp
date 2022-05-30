@@ -19,7 +19,6 @@
         android:roundIcon="@drawable/logo"
         android:usesCleartextTraffic="true"
         android:supportsRtl="true"
-        android:testOnly="true"
         android:theme="@style/Theme.Design.NoActionBar" >
         <meta-data
             android:name="com.google.android.geo.API_KEY"
