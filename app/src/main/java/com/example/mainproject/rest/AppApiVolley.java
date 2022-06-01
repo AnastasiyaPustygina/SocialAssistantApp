@@ -2,15 +2,9 @@ package com.example.mainproject.rest;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.database.CursorIndexOutOfBoundsException;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -21,9 +15,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.mainproject.MainActivity;
 import com.example.mainproject.OpenHelper;
-import com.example.android.multidex.mainproject.R;
 import com.example.mainproject.domain.Chat;
 import com.example.mainproject.domain.Message;
 import com.example.mainproject.domain.Organization;
@@ -31,10 +23,9 @@ import com.example.mainproject.domain.Person;
 import com.example.mainproject.domain.mapper.ChatMapper;
 import com.example.mainproject.domain.mapper.MessageMapper;
 import com.example.mainproject.domain.mapper.OrganizationMapper;
-import com.example.mainproject.fragment.ChatFragment;
-import com.example.mainproject.fragment.ListFragment;
+import com.example.mainproject.domain.mapper.PersonMapper;
 import com.example.mainproject.fragment.MainFragment;
-import com.google.protobuf.Api;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,7 +43,7 @@ public class AppApiVolley implements  AppApi {
 
 
     private final Context context;
-    public static final String BASE_URL = "http://192.168.1.35:8081";
+    public static final String BASE_URL = "http://192.168.88.19:8081";
     private com.android.volley.Response.ErrorListener errorListener;
 
 
@@ -151,7 +142,7 @@ public class AppApiVolley implements  AppApi {
 
     @Override
     public void updatePerson(int id, String telephone, String email, String name, byte[] photoPer,
-                                   int age, String dateOfBirth, String city) {
+                             int age, String dateOfBirth, String city) {
         String url = BASE_URL + "/person/" + id;
         RequestQueue referenceQueue = Volley.newRequestQueue(context);
         StringRequest stringRequest = new StringRequest(Request.Method.PUT,
@@ -196,47 +187,57 @@ public class AppApiVolley implements  AppApi {
 
     @Override
     public void addChat(Chat chat) {
-        OpenHelper openHelper = new OpenHelper(context, "OpenHelder", null, OpenHelper.VERSION);
+        OpenHelper openHelper = new OpenHelper(context, "OpenHelder",
+                null, OpenHelper.VERSION);
 
         if(openHelper.findChatIdByOrgIdAndPerId(chat.getOrganization().getId(),
                 chat.getPerson().getId()) == -100) {
-        String url = BASE_URL + "/chat";
-        RequestQueue referenceQueue = Volley.newRequestQueue(context);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("API_TEST_ADD_CHAT", response);
-                    }
-                },
-                errorListener){
-            @Nullable
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                SharedPreferences sharedPreferences = MainFragment.sharedPreferences;
-                String personStr = chat.getPerson().getId() + "!" + chat.getPerson().getName() +
-                        "!" + chat.getPerson().getTelephone() + "!" + chat.getPerson().getEmail() +
-                        "!" + chat.getPerson().getCity() + "!" +
-                        sharedPreferences.getString("per_photo" + chat.getPerson().getName(),
-                                "FILL_CHAT_CANNOT_PERSON_PHOTO")
-                         + "!" + chat.getPerson().getDateOfBirth() + "!"+
-                chat.getPerson().getAge();
-                String orgStr = chat.getOrganization().getId() + "!" + chat.getOrganization().getName()
-                        + "!" + chat.getOrganization().getType() + "!" +
-                        sharedPreferences.getString("org_photo" + chat.getOrganization().getAddress(), "FILL_CHAT_CANNOT_ORG_PHOTO")
-                        + "!" + chat.getOrganization().getDescription() + "!" +
-                        chat.getOrganization().getAddress() + "!" + chat.getOrganization().getNeeds() +
-                        "!" + chat.getOrganization().getLinkToWebsite();
+            String url = BASE_URL + "/chat";
+            RequestQueue referenceQueue = Volley.newRequestQueue(context);
+            StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                    url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("API_TEST_ADD_CHAT", response);
+                        }
+                    },
+                    errorListener){
+                @Nullable
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    SharedPreferences sharedPreferences = MainFragment.sharedPreferences;
+                    params.put("id", chat.getId() + "");
+                    params.put("idPerson", chat.getPerson().getId() + "");
+                    params.put("namePerson", chat.getPerson().getName());
 
+                    if (chat.getPerson().getTelephone() != null)
+                        params.put("telephonePerson", chat.getPerson().getTelephone());
+                    else params.put("telephonePerson", "");
 
-                params.put("id", chat.getId() + "");
-                params.put("strPerson", personStr);
-                params.put("strOrganization", orgStr);
-                return params;
-            }
-        };
+                    if (chat.getPerson().getEmail() != null)
+                        params.put("emailPerson", chat.getPerson().getEmail());
+                    else params.put("emailPerson", "");
+
+                    params.put("cityPerson", chat.getPerson().getCity());
+                    params.put("photoPerson", sharedPreferences.getString("per_photo" +
+                            chat.getPerson().getName(), "notPerPhotoInPref"));
+                    params.put("dateOfBirthPerson", chat.getPerson().getDateOfBirth());
+                    params.put("agePerson", chat.getPerson().getAge() + "");
+                    params.put("idOrganization", chat.getOrganization().getId() + "");
+                    params.put("nameOrganization", chat.getOrganization().getName());
+                    params.put("typeOrganization", chat.getOrganization().getType());
+                    params.put("photoOrganization", sharedPreferences.getString("org_photo" +
+                            chat.getOrganization().getAddress(), "notOrgPhotoInPref"));
+                    params.put("descriptionOrganization", chat.getOrganization().getDescription());
+                    params.put("addressOrganization", chat.getOrganization().getAddress());
+                    params.put("needsOrganization", chat.getOrganization().getNeeds());
+                    params.put("linkToWebsiteOrganization", chat.getOrganization().getLinkToWebsite());
+
+                    return params;
+                }
+            };
             referenceQueue.add(stringRequest);
         }
     }
@@ -257,6 +258,7 @@ public class AppApiVolley implements  AppApi {
                         openHelper.deleteAllChat();
                         Chat chat = null;
                         try {
+                            Log.e("aavfc", "" + response.length());
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject jsonObject = response.getJSONObject(i);
                                 chat = ChatMapper.chatFromJson(jsonObject, context);
@@ -284,9 +286,9 @@ public class AppApiVolley implements  AppApi {
                 OpenHelper openHelper = new OpenHelper(context, "OpenHelder",
                         null, OpenHelper.VERSION);
                 try{
-                if(openHelper.findAllMsg().size() != size) {
-                    fillMsg();
-                }
+                    if(openHelper.findAllMsg().size() != size) {
+                        fillMsg();
+                    }
                 }catch (Exception e){
                     Log.e("AppApiCheckNew", e.getMessage());
                 }
@@ -337,7 +339,7 @@ public class AppApiVolley implements  AppApi {
                         Log.d("API_TEST_ADD_MSG", response);
                     }
                 },
-                errorListener){
+                errorListener) {
             @Nullable
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
@@ -345,30 +347,38 @@ public class AppApiVolley implements  AppApi {
                 OpenHelper openHelper = new OpenHelper(
                         context, "OpenHelder", null, OpenHelper.VERSION);
                 Chat chat = openHelper.findChatById(message.getChat_id());
-
                 SharedPreferences sharedPreferences = MainFragment.sharedPreferences;
-                String personStr = chat.getPerson().getId() + "!" + chat.getPerson().getName() +
-                        "!" + chat.getPerson().getTelephone() + "!" + chat.getPerson().getEmail() +
-                        "!" + chat.getPerson().getCity() + "!" +
-                        sharedPreferences.getString("per_photo" + chat.getPerson().getName()
-                                , "FILL_CHAT_CANNOT_PERSON_PHOTO")
-                        + "!" + chat.getPerson().getDateOfBirth() + "!"+
-                        chat.getPerson().getAge();
-                String orgStr = chat.getOrganization().getId() + "!" + chat.getOrganization().getName()
-                        + "!" + chat.getOrganization().getType() + "!" +
-                        sharedPreferences.getString("org_photo" + chat.getOrganization().getAddress(), "FILL_CHAT_CANNOT_ORG_PHOTO")
-                        + "!" + chat.getOrganization().getDescription() + "!" +
-                        chat.getOrganization().getAddress() + "!" + chat.getOrganization().getNeeds() +
-                        "!" + chat.getOrganization().getLinkToWebsite();
 
                 params.put("id", message.getId() + "");
                 params.put("whose", message.getWhose());
                 params.put("value", message.getValues());
                 params.put("time", message.getTime());
-                params.put("chat_id", message.getChat_id() + "");
-                params.put("strPerson", personStr);
-                params.put("strOrganization", orgStr);
+                params.put("idChat", message.getChat_id() + "");
+                params.put("idPerson", chat.getPerson().getId() + "");
+                params.put("namePerson", chat.getPerson().getName());
 
+                if (chat.getPerson().getTelephone() != null)
+                    params.put("telephonePerson", chat.getPerson().getTelephone());
+                else params.put("telephonePerson", "");
+
+                if (chat.getPerson().getEmail() != null)
+                    params.put("emailPerson", chat.getPerson().getEmail());
+                else params.put("emailPerson", "");
+
+                params.put("cityPerson", chat.getPerson().getCity());
+                params.put("photoPerson", sharedPreferences.getString("per_photo" +
+                        chat.getPerson().getName(), "notPerPhotoInPref"));
+                params.put("dateOfBirthPerson", chat.getPerson().getDateOfBirth());
+                params.put("agePerson", chat.getPerson().getAge() + "");
+                params.put("idOrganization", chat.getOrganization().getId() + "");
+                params.put("nameOrganization", chat.getOrganization().getName());
+                params.put("typeOrganization", chat.getOrganization().getType());
+                params.put("photoOrganization", sharedPreferences.getString("org_photo" +
+                        chat.getOrganization().getAddress(), "notOrgPhotoInPref"));
+                params.put("descriptionOrganization", chat.getOrganization().getDescription());
+                params.put("addressOrganization", chat.getOrganization().getAddress());
+                params.put("needsOrganization", chat.getOrganization().getNeeds());
+                params.put("linkToWebsiteOrganization", chat.getOrganization().getLinkToWebsite());
                 return params;
             }
         };

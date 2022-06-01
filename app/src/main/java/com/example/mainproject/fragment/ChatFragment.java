@@ -127,7 +127,7 @@ public class ChatFragment extends Fragment {
                 });
                 imOrg.performClick();
             }
-            });
+        });
         bt_arrow_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -162,6 +162,7 @@ public class ChatFragment extends Fragment {
                         Message myMsg = new Message("person",
                                 openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId), et_msg.getText().toString(),
                                 curTime);
+
                         openHelper.insertMsg(myMsg);
                         new AppApiVolley(getContext()).addMessage(
                                 openHelper.findLastMessageByChatId(
@@ -185,45 +186,45 @@ public class ChatFragment extends Fragment {
     }
 
 
-        class MyChatThread extends Thread {
-            private Context context;
-            private OpenHelper openHelper;
-            private boolean b = true;
+    class MyChatThread extends Thread {
+        private Context context;
+        private OpenHelper openHelper;
+        private boolean b = true;
 
-            public MyChatThread(Context context) {
-                this.context = context;
-                openHelper = new OpenHelper(context, "OpenHelder", null, OpenHelper.VERSION);
-            }
+        public MyChatThread(Context context) {
+            this.context = context;
+            openHelper = new OpenHelper(context, "OpenHelder", null, OpenHelper.VERSION);
+        }
 
-            @Override
-            public void run() {
-                try {
-                    while (b) {
-                        new AppApiVolley(context).checkNewMsg();
-                        try {
-                            sleep(3 * 1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        requireActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    bt_update.performClick();
-                                }catch (Exception e){
-                                    Log.e("UPDATE_ADAPTER", e.getMessage());
-                                }
-                            }
-                        });
+        @Override
+        public void run() {
+            try {
+                while (b) {
+                    new AppApiVolley(context).checkNewMsg();
+                    try {
+                        sleep(3 * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                }catch (Exception e){
-                    Log.e("CHAT_THREAD", e.getMessage());
+                    requireActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                bt_update.performClick();
+                            }catch (Exception e){
+                                Log.e("UPDATE_ADAPTER", e.getMessage());
+                            }
+                        }
+                    });
                 }
-            }
-
-            public void changeBool() {
-                b = !b;
+            }catch (Exception e){
+                Log.e("CHAT_THREAD", e.getMessage());
             }
         }
+
+        public void changeBool() {
+            b = !b;
+        }
     }
+}
 

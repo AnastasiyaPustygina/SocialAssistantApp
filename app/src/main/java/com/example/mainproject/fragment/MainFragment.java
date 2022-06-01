@@ -128,7 +128,7 @@ public class MainFragment extends Fragment {
             e.printStackTrace();
         }
         String dataValue;
-        if(client.getTelephone() == null){
+        if(client.getTelephone() == null || client.getTelephone().isEmpty()){
             tv_forData.setText("Адрес электронной почты: ");
             dataValue = client.getEmail();
         } else{

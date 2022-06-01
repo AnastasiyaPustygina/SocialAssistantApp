@@ -129,6 +129,8 @@ public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHo
                 try{
                     if (!(openHelper1.findChatIdByOrgIdAndPerId(
                             organization.getId(), person.getId()) == 0)) {
+                        Log.e("ooabh", openHelper1.findAllChats().toString());
+
                         chat = new Chat(
                                 openHelper1.findPersonByLogin(nameOfPerson), organization);
                         openHelper1.insertChat(chat);
@@ -138,7 +140,8 @@ public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHo
                 }catch (CursorIndexOutOfBoundsException e){
                     openHelper1.insertChat(chat);
                     new AppApiVolley(context).addChat(openHelper1.findChatByPersonIdAndOrgId(
-                            openHelper1.findPersonByLogin(nameOfPerson).getId(), organization.getId()));}
+                            openHelper1.findPersonByLogin(nameOfPerson).getId(), organization.getId()));
+                }
                 Bundle bundleNameOfOrg = new Bundle();
                 bundleNameOfOrg.putString("NameOrg", holder.nameOrg.getText().toString());
                 bundleNameOfOrg.putString("LOG", nameOfPerson);
@@ -168,21 +171,21 @@ public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-         TextView nameOrg, typeOrg, needsOrg;
-         ImageView ph;
-         AppCompatButton btIdenFav;
-         AppCompatButton btHelp, fullInfo;
+        TextView nameOrg, typeOrg, needsOrg;
+        ImageView ph;
+        AppCompatButton btIdenFav;
+        AppCompatButton btHelp, fullInfo;
 
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             btIdenFav = itemView.findViewById(R.id.bt_fav_identifier);
-             nameOrg = itemView.findViewById(R.id.shDes_name);
-             typeOrg = itemView.findViewById(R.id.shDes_type);
-             needsOrg = itemView.findViewById(R.id.shDes_needs);
-             ph = itemView.findViewById(R.id.shDes_photoOrg);
-             btHelp = itemView.findViewById(R.id.bt_shDes_help);
-             fullInfo = itemView.findViewById(R.id.bt_shDes_fullInfo);
+            nameOrg = itemView.findViewById(R.id.shDes_name);
+            typeOrg = itemView.findViewById(R.id.shDes_type);
+            needsOrg = itemView.findViewById(R.id.shDes_needs);
+            ph = itemView.findViewById(R.id.shDes_photoOrg);
+            btHelp = itemView.findViewById(R.id.bt_shDes_help);
+            fullInfo = itemView.findViewById(R.id.bt_shDes_fullInfo);
 
         }
     }
