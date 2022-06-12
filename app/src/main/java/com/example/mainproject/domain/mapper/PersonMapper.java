@@ -15,18 +15,16 @@ public class PersonMapper {
         Person person = null;
         try {
             OpenHelper openHelper = new OpenHelper(context, "OpenHelder", null, OpenHelper.VERSION);
-            String data = jsonObject.getString("telephone").isEmpty() ?
+            String data = jsonObject.getString("telephone").isEmpty() ||
+                    jsonObject.getString("telephone").equals("null") ||
+                    jsonObject.getString("telephone") == null ?
                     jsonObject.getString("email") : jsonObject.getString("telephone");
-            SharedPreferences sharedPreferences = SignInFragment.sharedPreferences;
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("per_photo" + jsonObject.getString("name"),
-                    jsonObject.getString("photo"));
-            editor.commit();
             person = new Person(jsonObject.getInt("id"), data,
                     jsonObject.getString("name"), jsonObject.getInt("age"),
+                    jsonObject.getString("photo"),
                     jsonObject.getString("date_of_birth"),
                     jsonObject.getString("city"),
-                    openHelper.findPassByLogin(jsonObject.getString("name")));
+                    jsonObject.getString("password"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

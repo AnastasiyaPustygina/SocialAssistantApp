@@ -19,6 +19,11 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.mainproject.OpenHelper;
 import com.example.android.multidex.mainproject.R;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+
 public class SignInFragment extends Fragment {
     private EditText ed_data;
     private EditText ed_pass;
@@ -50,16 +55,24 @@ public class SignInFragment extends Fragment {
         btSignIn.performClick();
         OpenHelper oh = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
         try {
-            Log.d("sif", oh.findAllChats().toString());
+            Log.e("sif", oh.findAllChats().toString());
         } catch (Exception e) {e.printStackTrace();}
 
         btSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String encodedHash = "";
+                try {
+                    MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                    encodedHash = Arrays.toString(digest.digest(
+                            ed_pass.getText().toString().getBytes(StandardCharsets.UTF_8)));
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
                 if (ed_pass.getText().toString().isEmpty() || ed_data.getText().toString().isEmpty())
                     checking.setText("Не все поля заполнены");
-                else if (ed_pass.getText().toString().equals(
-                        oh.findPassByLogin(ed_data.getText().toString()))) {
+                else if ((encodedHash).equals(oh.findPassByLogin(ed_data.getText().toString())))
+                {
                     Bundle bundle = new Bundle();
                     bundle.putString("LOG", ed_data.getText().toString());
                     btSignIn.setOnClickListener((view1) -> {

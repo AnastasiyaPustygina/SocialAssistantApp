@@ -2,7 +2,6 @@ package com.example.mainproject.adapter;
 
 import android.content.Context;
 import android.database.CursorIndexOutOfBoundsException;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +27,7 @@ import com.example.mainproject.domain.Chat;
 import com.example.mainproject.domain.Organization;
 import com.example.mainproject.domain.Person;
 import com.example.mainproject.rest.AppApiVolley;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -76,8 +76,15 @@ public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHo
         holder.nameOrg.setText(organization.getName());
         holder.typeOrg.setText("Тип: " + organization.getType());
         holder.needsOrg.setText("Потребности: " + organization.getNeeds());
-        holder.ph.setImageBitmap(BitmapFactory.
-                decodeByteArray(organization.getPhotoOrg(), 0, organization.getPhotoOrg().length));
+        holder.ph.setImageDrawable(context.getResources().getDrawable(R.drawable.ava_for_project));
+        try{
+            if(organization.getPhotoOrg() != null && !organization.getPhotoOrg().equals("null")) {
+                Log.e("notNullPhoto", organization.getPhotoOrg());
+                Picasso.get().load(organization.getPhotoOrg()).into(holder.ph);
+            }
+        }catch (Exception e){
+            holder.ph.setImageDrawable(context.getResources().getDrawable(R.drawable.ava_for_project));
+        }
         holder.btIdenFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,8 +134,8 @@ public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHo
                 Chat chat = new Chat(
                         person, organization);
                 try{
-                    if (!(openHelper1.findChatIdByOrgIdAndPerId(
-                            organization.getId(), person.getId()) == 0)) {
+                    if (openHelper1.findChatIdByOrgIdAndPerId(
+                            organization.getId(), person.getId()) == -100) {
                         Log.e("ooabh", openHelper1.findAllChats().toString());
 
                         chat = new Chat(
@@ -138,9 +145,7 @@ public class OrgArrayAdapter extends RecyclerView.Adapter<OrgArrayAdapter.ViewHo
                                 openHelper1.findPersonByLogin(nameOfPerson).getId(), organization.getId()));
                     }
                 }catch (CursorIndexOutOfBoundsException e){
-                    openHelper1.insertChat(chat);
-                    new AppApiVolley(context).addChat(openHelper1.findChatByPersonIdAndOrgId(
-                            openHelper1.findPersonByLogin(nameOfPerson).getId(), organization.getId()));
+                    new AppApiVolley(context).addChat(chat);
                 }
                 Bundle bundleNameOfOrg = new Bundle();
                 bundleNameOfOrg.putString("NameOrg", holder.nameOrg.getText().toString());

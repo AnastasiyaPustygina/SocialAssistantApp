@@ -15,8 +15,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -25,6 +23,7 @@ import com.example.android.multidex.mainproject.R;
 import com.example.mainproject.domain.Chat;
 import com.example.mainproject.domain.Organization;
 import com.example.mainproject.rest.AppApiVolley;
+import com.squareup.picasso.Picasso;
 
 public class FullInfoFragment extends Fragment {
 
@@ -58,9 +57,14 @@ public class FullInfoFragment extends Fragment {
         link = getActivity().findViewById(R.id.tv_fullInfo_linkToWeb);
         OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
         Organization organization = openHelper.findOrgByName(getArguments().getString("NameOrg"));
-        Bitmap bitmap = BitmapFactory.
-                decodeByteArray(organization.getPhotoOrg(), 0, organization.getPhotoOrg().length);
-        photoOrg.setImageBitmap(bitmap);
+
+        try{
+            if(organization.getPhotoOrg() == null)
+                photoOrg.setImageDrawable(getResources().getDrawable(R.drawable.ava_for_project));
+            else Picasso.get().load(organization.getPhotoOrg()).into(photoOrg);
+        }catch (Exception e){
+            photoOrg.setImageDrawable(getResources().getDrawable(R.drawable.ava_for_project));
+        }
         name.setText(organization.getName());
         String tmp = getColoredSpanned(organization.getType(), "#000000");
         type.setText(Html.fromHtml("Тип:" + "\n" + tmp));

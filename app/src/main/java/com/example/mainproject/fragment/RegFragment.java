@@ -23,6 +23,10 @@ import com.example.mainproject.domain.Person;
 import com.example.mainproject.rest.AppApiVolley;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 public class RegFragment extends Fragment {
 
@@ -99,7 +103,7 @@ public class RegFragment extends Fragment {
                     checking.setText("Введите корректные данные");
                     check = 1;
                 }
-                 data = edTelOrEmail.getText().toString();
+                data = edTelOrEmail.getText().toString();
                 OpenHelper openHelper = new OpenHelper(
                         getContext(), "OpenHelder", null, OpenHelper.VERSION);
                 if(openHelper.findAllName().contains(name)) {
@@ -114,10 +118,10 @@ public class RegFragment extends Fragment {
                         || age == 0
                         || data.isEmpty()
                         || dateOfBirth.isEmpty()
-                       || city.isEmpty()
+                        || city.isEmpty()
                         || password1.isEmpty()
                         || password2.isEmpty()) {
-                   checking.setText("Не все поля заполнены");
+                    checking.setText("Не все поля заполнены");
                 }
                 else if (name.contains("!") || name.contains("#") || name.contains("+") ||
                         name.contains("=") || name.contains("'")|| name.contains(",")
@@ -136,41 +140,31 @@ public class RegFragment extends Fragment {
                     checking.setText("Нельзя использовать дополнительные символы");
                 }
                 else if (!password1.equals(password2)) {
-                        checking.setText("Пароли не совпадают");
-                    } else if (check == 0){
+                    checking.setText("Пароли не совпадают");
+                } else if (check == 0){
 
-                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
-                                R.drawable.ava_for_project);
-
-                        SharedPreferences.Editor editor = SignInFragment.sharedPreferences.edit();
-                        StringBuilder stringBuilder = new StringBuilder();
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        Bitmap.CompressFormat imFor = Bitmap.CompressFormat.JPEG;
-                        bitmap.compress(imFor, 0, stream);
-                        byte[] photoPer = stream.toByteArray();
-                        for (int i = 0; i < photoPer.length - 1; i++) {
-                            stringBuilder.append(String.valueOf(photoPer[i])).append(" ");
-                        }
-                        stringBuilder.append(String.valueOf(
-                                photoPer[photoPer.length - 1]));
-
-                        editor.putString("per_photo" + name, stringBuilder.toString());
-                        editor.commit();
-
-
-                                openHelper.insert(new Person(data, name, age, dateOfBirth, city, password1));
-
-                            new AppApiVolley(getContext()).addPerson
-                                    (openHelper.findPersonByLogin(name));
-
-                        bt_reg_fr_reg.setOnClickListener((view1) -> {
-                            NavHostFragment.
-                                    findNavController(RegFragment.this).navigate(
-                                    R.id.action_regFragment_to_signInFragment);
-                        });
-                        bt_reg_fr_reg.performClick();
+                    String encodedHash = null;
+                    try {
+                        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                        encodedHash = Arrays.toString(digest.digest(
+                                password1.getBytes(StandardCharsets.UTF_8)));
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
                     }
+
+                    openHelper.insert(new Person(data, name, age, null, dateOfBirth, city, encodedHash));
+
+                    new AppApiVolley(getContext()).addPerson
+                            (openHelper.findPersonByLogin(name));
+
+                    bt_reg_fr_reg.setOnClickListener((view1) -> {
+                        NavHostFragment.
+                                findNavController(RegFragment.this).navigate(
+                                R.id.action_regFragment_to_signInFragment);
+                    });
+                    bt_reg_fr_reg.performClick();
                 }
+            }
         });
     }
 }

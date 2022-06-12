@@ -36,6 +36,7 @@ import com.example.mainproject.adapter.ChatArrayAdapter;
 import com.example.mainproject.domain.Message;
 import com.example.mainproject.domain.Organization;
 import com.example.mainproject.rest.AppApiVolley;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class ChatFragment extends Fragment {
     private ChatArrayAdapter recyclerAdapter;
     private AppCompatButton bt_update;
     private ActivityResultLauncher<Intent> launcher;
+    private MyChatThread myChatThread;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,9 +85,15 @@ public class ChatFragment extends Fragment {
                     openHelper.findChatIdByOrgIdAndPerId(org.getId(), perId)).size() - 1);
         } catch (CursorIndexOutOfBoundsException ignored) {
         }
+        try{
+            if(org.getPhotoOrg() == null)
+                imOrg.setImageDrawable(getResources().getDrawable(R.drawable.ava_for_project));
+            else Picasso.get().load(org.getPhotoOrg()).into(imOrg);
+        }catch (Exception e){
+            imOrg.setImageDrawable(getResources().getDrawable(R.drawable.ava_for_project));
+        }
 
-        byte[] photoByte = org.getPhotoOrg();
-        imOrg.setImageBitmap(BitmapFactory.decodeByteArray(photoByte, 0, photoByte.length));
+
         bt_update = new AppCompatButton(getContext());
         bt_update.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,8 +117,7 @@ public class ChatFragment extends Fragment {
 
             }
         });
-
-        MyChatThread myChatThread = new MyChatThread(getContext());
+        myChatThread = new MyChatThread(getContext());
         myChatThread.start();
         imOrg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,6 +149,7 @@ public class ChatFragment extends Fragment {
                 bt_arrow_back.performClick();
             }
         });
+
 
         nameOrg.setText(org.getName());
 
@@ -184,8 +192,6 @@ public class ChatFragment extends Fragment {
             }
         });
     }
-
-
     class MyChatThread extends Thread {
         private Context context;
         private OpenHelper openHelper;
@@ -206,6 +212,7 @@ public class ChatFragment extends Fragment {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    if(!b) break;
                     requireActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -226,5 +233,10 @@ public class ChatFragment extends Fragment {
             b = !b;
         }
     }
-}
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(myChatThread.b) myChatThread.changeBool();
+    }
+}

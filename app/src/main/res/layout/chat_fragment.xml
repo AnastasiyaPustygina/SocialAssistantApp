@@ -15,7 +15,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1.3">
             <ImageView
                 android:id="@+id/bt_chat_arrowBack"
                 android:layout_width="0dp"
@@ -34,7 +34,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1.5">
+            android:layout_weight="2">
         <ImageView
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -50,47 +50,20 @@
             android:src="@mipmap/ic_channel_foreground" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
-            android:layout_weight="3.7"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
             <TextView
                 android:id="@+id/tv_ch_nameOrg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="3.7"
                 android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginBottom="3dp"
+                android:layout_marginBottom="20dp"
                 android:text="ИМЯ"
                 android:textColor="@color/forEdit"
                 android:textSize="15dp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tv_chat_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="13dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="3dp"
-                android:layout_marginBottom="10dp"
-                android:textColor="#A7BCC5"
-                android:text="статус"/>
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/iv_chat_threePoints"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="15dp"
-
-            android:src="@drawable/three_points" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

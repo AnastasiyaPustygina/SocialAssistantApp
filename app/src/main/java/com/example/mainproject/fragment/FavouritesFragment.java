@@ -1,6 +1,5 @@
 package com.example.mainproject.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,8 +17,6 @@ import com.example.mainproject.OpenHelper;
 import com.example.mainproject.adapter.OrgArrayAdapter;
 import com.example.android.multidex.mainproject.R;
 import com.example.mainproject.domain.Organization;
-import com.example.mainproject.rest.AppApiVolley;
-
 import java.util.ArrayList;
 
 public class FavouritesFragment extends Fragment {
@@ -99,4 +96,4 @@ public class FavouritesFragment extends Fragment {
             Log.d("FavFragment", "Получение разрешения на определение геолокации");
         }
     }
-    }
+}
