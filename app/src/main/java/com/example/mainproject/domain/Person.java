@@ -115,7 +115,6 @@ public class Person {
                 ", age=" + age +
                 ", dateOfBirth='" + dateOfBirth + '\'' +
                 ", city='" + city + '\'' +
-                ", password='" + password + '\'' +
                 ", arr_fav_org=" + arr_fav_org +
                 '}';
     }
