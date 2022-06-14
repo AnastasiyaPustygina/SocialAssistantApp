@@ -34,7 +34,7 @@ public class FavouritesFragment extends Fragment {
         bt_list = getActivity().findViewById(R.id.bt_fav_list);
         ArrayList<Organization> arListOrg = new ArrayList<Organization>();
         OpenHelper openHelper = new OpenHelper(getContext(), "OpenHelder", null, OpenHelper.VERSION);
-        String[] arr = openHelper.findFavOrgByLogin(getArguments().getString("LOG")).split(" ");
+        String[] arr = openHelper.findFavOrgByLogin(getArguments().getString("LOG")).split("    ");
         for (int i = 1; i < arr.length; i++) {
             if (openHelper.findOrgByName(arr[i]).getName() != null)
                 arListOrg.add(openHelper.findOrgByName(arr[i]));
